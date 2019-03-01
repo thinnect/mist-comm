@@ -8,6 +8,7 @@
 static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) {
 	if(comms != NULL) {
 		msg->layer = (comms_layer_t*)comms;
+		msg->body.length = 0;
 	}
 }
 
@@ -23,11 +24,15 @@ static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_
 }
 
 static uint8_t am_comms_get_payload_length(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return 0;
+	return msg->body.length;
 }
 static void am_comms_set_payload_length(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t length) {
+	msg->body.length = length;
 }
 static void* am_comms_get_payload(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t length) {
+	if(length < sizeof(msg->body.payload)) {
+		return (void*)(msg->body.payload);
+	}
 	return NULL;
 }
 
@@ -135,13 +140,18 @@ void comms_am_set_source(comms_msg_t* msg, am_addr_t source) {
 	}
 }
 
-comms_error_t comms_am_create(comms_layer_t* layer) {
+comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
 	comms_layer_iface_t* comms = (comms_layer_iface_t*)layer;
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)layer;
 
 	comms->init_message = &am_comms_init_message;
 
-	comms->send = &am_comms_send;
+	if(sender != NULL) {
+		comms->send = sender;
+	}
+	else {
+		comms->send = &am_comms_send;
+	}
 	comms->register_recv = &am_comms_register_recv;
 	comms->deregister_recv = &am_comms_deregister_recv;
 

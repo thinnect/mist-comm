@@ -48,7 +48,10 @@ typedef struct comms_msg {
 		uint8_t source[COMMS_MSG_ADDRESSING_SIZE];
 		uint8_t destination[COMMS_MSG_ADDRESSING_SIZE];
 		uint8_t header[COMMS_MSG_HEADER_SIZE];
+
+		uint8_t length;
 		uint8_t payload[COMMS_MSG_PAYLOAD_SIZE];
+
 		uint8_t footer[COMMS_MSG_FOOTER_SIZE];
 		uint8_t metadata[COMMS_MSG_METADATA_SIZE];
 	} body;

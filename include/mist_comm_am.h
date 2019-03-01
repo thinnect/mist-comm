@@ -30,6 +30,6 @@ am_addr_t comms_am_get_source(comms_msg_t* msg);
 void comms_am_set_source(comms_msg_t* msg, am_addr_t source);
 // -----------------------------------------------------------------------------
 
-comms_error_t comms_am_create(comms_layer_t* layer);
+comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender);
 
 #endif//MIST_COMM_AM_H_
