@@ -26,8 +26,8 @@ typedef comms_error_t comms_set_retries_used_f(comms_layer_iface_t*, comms_msg_t
 typedef uint32_t comms_get_timeout_f(comms_layer_iface_t*, comms_msg_t*);
 typedef comms_error_t comms_set_timeout_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
 
-typedef bool comms_is_ack_required_f(comms_layer_iface_t*, comms_msg_t*);
-typedef comms_error_t comms_set_ack_required_f(comms_layer_iface_t*, comms_msg_t*, bool);
+typedef bool comms_is_ack_requested_f(comms_layer_iface_t*, comms_msg_t*);
+typedef comms_error_t comms_set_ack_requested_f(comms_layer_iface_t*, comms_msg_t*, bool);
 
 typedef bool comms_ack_received_f(comms_layer_iface_t*, comms_msg_t*);
 
@@ -66,8 +66,8 @@ typedef struct comms_layer_iface {
 	comms_get_timeout_f* get_timeout;
 	comms_set_timeout_f* set_timeout;
 
-	comms_is_ack_required_f* is_ack_required;
-	comms_set_ack_required_f* set_ack_required;
+	comms_is_ack_requested_f* is_ack_requested;
+	comms_set_ack_requested_f* set_ack_requested;
 
 	comms_ack_received_f* ack_received;
 
@@ -80,6 +80,9 @@ typedef struct comms_layer_iface {
 
 	comms_get_rssi_f* get_rssi;
 	comms_set_rssi_f* set_rssi;
+
+	// Receivers
+	comms_receiver_t* receivers; // Linked list of registered receivers
 
 } comms_layer_iface_t;
 

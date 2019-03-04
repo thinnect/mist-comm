@@ -1,6 +1,6 @@
 
-#include "mist_comm.h"
 #include "mist_comm_iface.h"
+#include "mist_comm_ref.h"
 #include "mist_comm_am.h"
 
 #include <stdbool.h>
@@ -14,9 +14,11 @@ static comms_error_t am_comms_send(comms_layer_iface_t* comms, comms_msg_t* msg,
 }
 
 static comms_error_t am_comms_register_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user, am_id_t amid) {
+	// there is a suitable implementation in mist_comm_rcv.c
 	return COMMS_FAIL;
 }
 static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr) {
+	// there is a suitable implementation in mist_comm_rcv.c
 	return COMMS_FAIL;
 }
 
@@ -37,56 +39,62 @@ static void* am_comms_get_payload(comms_layer_iface_t* comms, comms_msg_t* msg, 
 }
 
 static uint8_t am_comms_get_retries(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return 0;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->retries;
 }
 static comms_error_t am_comms_set_retries(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t count) {
-	return COMMS_EINVAL;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->retries = count;
+	return COMMS_SUCCESS;
 }
 
 static uint8_t am_comms_get_retries_used(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return 0;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->sent;
 }
 static comms_error_t am_comms_set_retries_used(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t count) {
-	return COMMS_EINVAL;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->sent = count;
+	return COMMS_SUCCESS;
 }
 
 static uint32_t am_comms_get_timeout(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return 0;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->timeout;
 }
 static comms_error_t am_comms_set_timeout(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t timeout) {
-	return COMMS_EINVAL;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->timeout = timeout;
+	return COMMS_SUCCESS;
 }
 
-static bool am_comms_is_ack_required(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return false;
+static bool am_comms_is_ack_requested(comms_layer_iface_t* comms, comms_msg_t* msg) {
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_requested;
 }
-static comms_error_t am_comms_set_ack_required(comms_layer_iface_t* comms, comms_msg_t* msg, bool required) {
-	return COMMS_EINVAL;
+static comms_error_t am_comms_set_ack_requested(comms_layer_iface_t* comms, comms_msg_t* msg, bool required) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_requested = required;
+	return COMMS_SUCCESS;
 }
 static bool am_comms_ack_received(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return false;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_received;
 }
 
 static comms_error_t am_comms_set_event_time(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t evt) {
 	return COMMS_EINVAL;
 }
 static uint32_t am_comms_get_event_time(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return 0;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time;
 }
 static bool am_comms_event_time_valid(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return false;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time_valid;
 }
 
 static uint8_t am_comms_get_lqi(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return 0;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->lqi;
 }
 static void am_comms_set_lqi(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t lqi) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->lqi = lqi;
 }
 
 static int8_t am_comms_get_rssi(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	return -128;
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->rssi;
 }
 static void am_comms_set_rssi(comms_layer_iface_t* comms, comms_msg_t* msg, int8_t rssi) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->rssi = rssi;
 }
 
 
@@ -134,8 +142,9 @@ comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
 	else {
 		comms->send = &am_comms_send;
 	}
-	comms->register_recv = &am_comms_register_recv;
-	comms->deregister_recv = &am_comms_deregister_recv;
+	//comms->register_recv = &am_comms_register_recv;
+	//comms->deregister_recv = &am_comms_deregister_recv;
+	comms_initialize_rcvr_management(comms);
 
 	comms->get_payload_max_length = &am_comms_get_payload_max_length;
 	comms->get_payload_length = &am_comms_get_payload_length;
@@ -151,8 +160,8 @@ comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
 	comms->get_timeout = &am_comms_get_timeout;
 	comms->set_timeout = &am_comms_set_timeout;
 
-	comms->is_ack_required = &am_comms_is_ack_required;
-	comms->set_ack_required = &am_comms_set_ack_required;
+	comms->is_ack_requested = &am_comms_is_ack_requested;
+	comms->set_ack_requested = &am_comms_set_ack_requested;
 
 	comms->ack_received = &am_comms_ack_received;
 

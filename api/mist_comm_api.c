@@ -99,17 +99,17 @@ comms_error_t comms_set_timeout(comms_layer_t* comms, comms_msg_t* msg, uint32_t
 	return COMMS_EINVAL;
 }
 
-bool comms_is_ack_required(comms_layer_t* comms, comms_msg_t* msg) {
+bool comms_is_ack_requested(comms_layer_t* comms, comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
-		return cl->is_ack_required(cl, msg);
+		return cl->is_ack_requested(cl, msg);
 	}
 	return false;
 }
-comms_error_t comms_set_ack_required(comms_layer_t* comms, comms_msg_t* msg, bool required) {
+comms_error_t comms_set_ack_requested(comms_layer_t* comms, comms_msg_t* msg, bool requested) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
-		return cl->set_ack_required(cl, msg, required);
+		return cl->set_ack_requested(cl, msg, requested);
 	}
 	return COMMS_EINVAL;
 }

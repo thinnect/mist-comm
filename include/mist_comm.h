@@ -142,6 +142,11 @@ int8_t comms_get_rssi(comms_layer_t* comms, comms_msg_t* msg);
 void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
 // -----------------------------------------------------------------------------
 
+// Other functions -------------------------------------------------------------
+// Deliver a message to all registered receivers
+comms_msg_t* comms_deliver(comms_layer_t* comms, comms_msg_t* msg);
+// -----------------------------------------------------------------------------
+
 #include "mist_comm_private.h"
 
 #endif//MIST_COMM_H_
