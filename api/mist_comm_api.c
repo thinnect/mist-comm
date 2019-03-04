@@ -16,15 +16,15 @@ comms_error_t comms_send(comms_layer_t* comms, comms_msg_t* msg, comms_send_done
 	return COMMS_EINVAL;
 }
 
-comms_receiver_id_t comms_register_recv(comms_layer_t* comms, comms_receive_f* func, void *user, am_id_t amid) {
-	if(comms != NULL) {
-		return ((comms_layer_iface_t*)comms)->register_recv((comms_layer_iface_t*)comms, func, user, amid);
+comms_error_t comms_register_recv(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void* user, am_id_t amid) {
+	if((comms != NULL)&&(rcvr != NULL)&&(func != NULL)) {
+		return ((comms_layer_iface_t*)comms)->register_recv((comms_layer_iface_t*)comms, rcvr, func, user, amid);
 	}
-	return -1;
+	return COMMS_EINVAL;
 }
-comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_id_t rid) {
+comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr) {
 	if(comms != NULL) {
-		return ((comms_layer_iface_t*)comms)->deregister_recv((comms_layer_iface_t*)comms, rid);
+		return ((comms_layer_iface_t*)comms)->deregister_recv((comms_layer_iface_t*)comms, rcvr);
 	}
 	return COMMS_EINVAL;
 }

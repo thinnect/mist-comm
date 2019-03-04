@@ -8,8 +8,9 @@ typedef struct comms_layer_iface comms_layer_iface_t;
 typedef void comms_init_message_f(comms_layer_iface_t*, comms_msg_t*);
 
 typedef comms_error_t comms_send_f(comms_layer_iface_t*, comms_msg_t*, comms_send_done_f*, void*);
-typedef comms_receiver_id_t comms_register_recv_f(comms_layer_iface_t*, comms_receive_f*, void*, am_id_t);
-typedef comms_error_t comms_deregister_recv_f(comms_layer_iface_t*, comms_receiver_id_t);
+
+typedef comms_error_t comms_register_recv_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*, am_id_t);
+typedef comms_error_t comms_deregister_recv_f(comms_layer_iface_t*, comms_receiver_t*);
 
 typedef uint8_t comms_get_payload_max_length_f(comms_layer_iface_t*);
 typedef uint8_t comms_get_payload_length_f(comms_layer_iface_t*, comms_msg_t*);

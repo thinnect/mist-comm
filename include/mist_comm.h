@@ -41,27 +41,6 @@ typedef struct comms_layer {
 } comms_layer_t;
 
 typedef struct comms_msg comms_msg_t;
-typedef struct comms_msg {
-	struct {
-		uint16_t application; // AMID, port?
-		uint8_t source[COMMS_MSG_ADDRESSING_SIZE];
-		uint8_t destination[COMMS_MSG_ADDRESSING_SIZE];
-		uint8_t header[COMMS_MSG_HEADER_SIZE];
-
-		uint8_t length;
-		uint8_t payload[COMMS_MSG_PAYLOAD_SIZE];
-
-		uint8_t footer[COMMS_MSG_FOOTER_SIZE];
-		uint8_t metadata[COMMS_MSG_METADATA_SIZE];
-	} body;
-	comms_msg_t* next; // ... maybe, could be very useful for transitioning through layers
-} comms_msg_t;
-
-typedef int16_t comms_receiver_id_t;
-
-// Initialize a message structure for use on the specified communications
-// layer. Must be called before any packet functions can be used.
-void comms_init_message(comms_layer_t* comms, comms_msg_t* msg);
 
 // Callback definitions --------------------------------------------------------
 
@@ -73,7 +52,16 @@ typedef void comms_send_done_f(void* user, comms_msg_t* msg, comms_error_t resul
 
 // Signalled when a message is received. Functions of this type must first be
 // registered with a communications layer with comms_register_recv.
-typedef comms_msg_t* comms_receive_f(void* user, comms_msg_t* msg);
+typedef comms_msg_t* comms_receive_f(comms_layer_t* comms, comms_msg_t* msg, void* user);
+// ???
+// do we want to allow message swapping?
+// ???
+
+// -----------------------------------------------------------------------------
+
+// Initialize a message structure for use on the specified communications
+// layer. Must be called before any packet functions can be used.
+void comms_init_message(comms_layer_t* comms, comms_msg_t* msg);
 
 // Send a message through the specified communications layer.
 // The callback function specified with the send done function argument sdf will
@@ -81,21 +69,26 @@ typedef comms_msg_t* comms_receive_f(void* user, comms_msg_t* msg);
 // argument is mandatory, the user argument may be NULL.
 comms_error_t comms_send(comms_layer_t* comms, comms_msg_t* msg, comms_send_done_f* sdf, void* user);
 
-// Receiver and receiver registration ------------------------------------------
+// Receiver registration ------------------------------------------
 
-// returns a unique receiver ID, which can be used to deregister the receiver.
-// Only non-negative receiver IDs are valid, a negative value indicates failure.
-// The same receive function can be registered several times for different
-// conditions and with a different user argument.
-comms_receiver_id_t comms_register_recv(comms_layer_t* comms, comms_receive_f* func, void *user, am_id_t amid);
+typedef struct comms_receiver comms_receiver_t;
+
+// Receiver must pass an unused comms_receiver_t object, guaranteeing that the
+// memory remains allocated and is not used elsewhere until deregister is called.
+// One receiver object may not be used in multiple roles at the same time, but
+// the same receive function can be registered several times with different
+// conditions and/or with a different user argument.
+comms_error_t comms_register_recv(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user, am_id_t amid);
 // ???
 // last param should be some form of generic args, but this is C ... are we ok
 // to proceed with AM ID or should we expand and rename? 16 bit port?
 // and what other filtering is needed for receives ... if any?
 // ???
 
-// Remove and already registered receive function.
-comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_id_t rid);
+// Remove an already registered receiver.
+comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr);
+
+// -----------------------------------------------------------------------------
 
 // Message payload manipulation functions --------------------------------------
 uint8_t comms_get_payload_max_length(comms_layer_t* comms);
@@ -148,5 +141,7 @@ void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi);
 int8_t comms_get_rssi(comms_layer_t* comms, comms_msg_t* msg);
 void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
 // -----------------------------------------------------------------------------
+
+#include "mist_comm_private.h"
 
 #endif//MIST_COMM_H_
