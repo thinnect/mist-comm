@@ -23,11 +23,11 @@ typedef struct comms_layer_am {
 } comms_layer_am_t;
 
 // Message manipulation functions for ActiveMessage layer ----------------------
-am_addr_t comms_am_get_destination(comms_msg_t* msg);
-void comms_am_set_destination(comms_msg_t* msg, am_addr_t dest);
+am_addr_t comms_am_get_destination(comms_layer_t* comms, comms_msg_t* msg);
+void comms_am_set_destination(comms_layer_t* comms, comms_msg_t* msg, am_addr_t dest);
 
-am_addr_t comms_am_get_source(comms_msg_t* msg);
-void comms_am_set_source(comms_msg_t* msg, am_addr_t source);
+am_addr_t comms_am_get_source(comms_layer_t* comms, comms_msg_t* msg);
+void comms_am_set_source(comms_layer_t* comms, comms_msg_t* msg, am_addr_t source);
 // -----------------------------------------------------------------------------
 
 comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender);

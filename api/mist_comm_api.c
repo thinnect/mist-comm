@@ -29,181 +29,144 @@ comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_id_t ri
 	return COMMS_EINVAL;
 }
 
-uint8_t comms_get_payload_length(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_payload_length(comms, msg);
-		}
+uint8_t comms_get_payload_max_length(comms_layer_t* comms) {
+	return ((comms_layer_iface_t*)comms)->get_payload_max_length((comms_layer_iface_t*)comms);
+}
+
+uint8_t comms_get_payload_length(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_payload_length(cl, msg);
 	}
 	return 0;
 }
-void comms_set_payload_length(comms_msg_t* msg, uint8_t length) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			comms->set_payload_length(comms, msg, length);
-		}
+void comms_set_payload_length(comms_layer_t* comms, comms_msg_t* msg, uint8_t length) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		cl->set_payload_length(cl, msg, length);
 	}
 }
-void* comms_get_payload(comms_msg_t* msg, uint8_t length) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_payload(comms, msg, length);
-		}
+void* comms_get_payload(comms_layer_t* comms, comms_msg_t* msg, uint8_t length) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_payload(cl, msg, length);
 	}
 	return NULL;
 }
 
-uint8_t comms_get_retries(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_retries(comms, msg);
-		}
+uint8_t comms_get_retries(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_retries(cl, msg);
 	}
 	return 0;
 }
-comms_error_t comms_set_retries(comms_msg_t* msg, uint8_t count) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->set_retries(comms, msg, count);
-		}
+comms_error_t comms_set_retries(comms_layer_t* comms, comms_msg_t* msg, uint8_t count) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_retries(cl, msg, count);
 	}
 	return COMMS_EINVAL;
 }
 
-uint8_t comms_get_retries_used(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_retries_used(comms, msg);
-		}
+uint8_t comms_get_retries_used(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_retries_used(cl, msg);
 	}
 	return 0;
 }
-comms_error_t comms_set_retries_used(comms_msg_t* msg, uint8_t count) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->set_retries_used(comms, msg, count);
-		}
+comms_error_t comms_set_retries_used(comms_layer_t* comms, comms_msg_t* msg, uint8_t count) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_retries_used(cl, msg, count);
 	}
 	return COMMS_EINVAL;
 }
 
-uint32_t comms_get_timeout(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_timeout(comms, msg);
-		}
+uint32_t comms_get_timeout(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_timeout(cl, msg);
 	}
 	return 0;
 }
-comms_error_t comms_set_timeout(comms_msg_t* msg, uint32_t timeout) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->set_timeout(comms, msg, timeout);
-		}
-		return COMMS_UNINITIALIZED;
+comms_error_t comms_set_timeout(comms_layer_t* comms, comms_msg_t* msg, uint32_t timeout) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_timeout(cl, msg, timeout);
 	}
 	return COMMS_EINVAL;
 }
 
-bool comms_is_ack_required(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->is_ack_required(comms, msg);
-		}
+bool comms_is_ack_required(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->is_ack_required(cl, msg);
 	}
 	return false;
 }
-comms_error_t comms_set_ack_required(comms_msg_t* msg, bool required) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->set_ack_required(comms, msg, required);
-		}
-		return COMMS_UNINITIALIZED;
+comms_error_t comms_set_ack_required(comms_layer_t* comms, comms_msg_t* msg, bool required) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_ack_required(cl, msg, required);
 	}
 	return COMMS_EINVAL;
 }
-bool comms_ack_received(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->ack_received(comms, msg);
-		}
+bool comms_ack_received(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->ack_received(cl, msg);
 	}
 	return false;
 }
 
-comms_error_t comms_set_event_time(comms_msg_t* msg, uint32_t evt) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->set_event_time(comms, msg, evt);
-		}
-		return COMMS_UNINITIALIZED;
+comms_error_t comms_set_event_time(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_event_time(cl, msg, evt);
 	}
 	return COMMS_EINVAL;
 }
-uint32_t comms_get_event_time(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_event_time(comms, msg);
-		}
+uint32_t comms_get_event_time(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_event_time(cl, msg);
 	}
 	return 0;
 }
-bool comms_event_time_valid(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->event_time_valid(comms, msg);
-		}
+bool comms_event_time_valid(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->event_time_valid(cl, msg);
 	}
 	return false;
 }
 
-uint8_t comms_get_lqi(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_lqi(comms, msg);
-		}
+uint8_t comms_get_lqi(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_lqi(cl, msg);
 	}
 	return 0;
 }
-void comms_set_lqi(comms_msg_t* msg, uint8_t lqi) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			comms->set_lqi(comms, msg, lqi);
-		}
+void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		cl->set_lqi(cl, msg, lqi);
 	}
 }
 
-int8_t comms_get_rssi(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			return comms->get_rssi(comms, msg);
-		}
+int8_t comms_get_rssi(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_rssi(cl, msg);
 	}
 	return -128;
 }
-void comms_set_rssi(comms_msg_t* msg, int8_t rssi) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_iface_t* comms = (comms_layer_iface_t*)msg->layer;
-			comms->set_rssi(comms, msg, rssi);
-		}
+void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		cl->set_rssi(cl, msg, rssi);
 	}
 }

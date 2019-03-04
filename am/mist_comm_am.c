@@ -6,10 +6,7 @@
 #include <stdbool.h>
 
 static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) {
-	if(comms != NULL) {
-		msg->layer = (comms_layer_t*)comms;
-		msg->body.length = 0;
-	}
+	msg->body.length = 0;
 }
 
 static comms_error_t am_comms_send(comms_layer_iface_t* comms, comms_msg_t* msg, comms_send_done_f* sdf, void* user) {
@@ -23,6 +20,9 @@ static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_
 	return COMMS_FAIL;
 }
 
+static uint8_t am_comms_get_payload_max_length(comms_layer_iface_t* comms) {
+	return 114;
+}
 static uint8_t am_comms_get_payload_length(comms_layer_iface_t* comms, comms_msg_t* msg) {
 	return msg->body.length;
 }
@@ -104,40 +104,22 @@ static void am_comms_set_source(comms_layer_am_t* comms, comms_msg_t* msg, am_ad
 	*((am_addr_t*)msg->body.source) = source;
 }
 
-am_addr_t comms_am_get_destination(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_am_t* comms = (comms_layer_am_t*)msg->layer;
-			return comms->am_get_destination(comms, msg);
-		}
-	}
-	return 0;
+am_addr_t comms_am_get_destination(comms_layer_t* comms, comms_msg_t* msg) {
+	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
+	return amcomms->am_get_destination(amcomms, msg);
 }
-void comms_am_set_destination(comms_msg_t* msg, am_addr_t dest) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_am_t* comms = (comms_layer_am_t*)msg->layer;
-			comms->am_set_destination(comms, msg, dest);
-		}
-	}
+void comms_am_set_destination(comms_layer_t* comms, comms_msg_t* msg, am_addr_t dest) {
+	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
+	amcomms->am_set_destination(amcomms, msg, dest);
 }
 
-am_addr_t comms_am_get_source(comms_msg_t* msg) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_am_t* comms = (comms_layer_am_t*)msg->layer;
-			return comms->am_get_source(comms, msg);
-		}
-	}
-	return 0;
+am_addr_t comms_am_get_source(comms_layer_t* comms, comms_msg_t* msg) {
+	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
+	return amcomms->am_get_source(amcomms, msg);
 }
-void comms_am_set_source(comms_msg_t* msg, am_addr_t source) {
-	if(msg != NULL) {
-		if(msg->layer != NULL) {
-			comms_layer_am_t* comms = (comms_layer_am_t*)msg->layer;
-			comms->am_set_source(comms, msg, source);
-		}
-	}
+void comms_am_set_source(comms_layer_t* comms, comms_msg_t* msg, am_addr_t source) {
+	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
+	amcomms->am_set_source(amcomms, msg, source);
 }
 
 comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
@@ -155,6 +137,7 @@ comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
 	comms->register_recv = &am_comms_register_recv;
 	comms->deregister_recv = &am_comms_deregister_recv;
 
+	comms->get_payload_max_length = &am_comms_get_payload_max_length;
 	comms->get_payload_length = &am_comms_get_payload_length;
 	comms->set_payload_length = &am_comms_set_payload_length;
 	comms->get_payload = &am_comms_get_payload;

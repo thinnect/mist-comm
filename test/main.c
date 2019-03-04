@@ -39,17 +39,17 @@ int main() {
 	printf("create=%d\n", err);
 
 	comms_init_message(comm, &msg);
-	comms_am_set_destination(&msg, 0xFFFF);
-	comms_am_set_source(&msg, 0x0001);
+	comms_am_set_destination(comm, &msg, 0xFFFF);
+	comms_am_set_source(comm, &msg, 0x0001);
 
-	payload = comms_get_payload(&msg, strlen(hello)+1);
+	payload = comms_get_payload(comm, &msg, strlen(hello)+1);
 	if(payload == NULL) {
 		printf("payload NULL\n");
 		return 1;
 	}
 	strncpy(payload, hello, strlen(hello)+1);
 
-	printf("%04X->%04X\n", comms_am_get_source(&msg), comms_am_get_destination(&msg));
+	printf("%04X->%04X\n", comms_am_get_source(comm, &msg), comms_am_get_destination(comm, &msg));
 
 	err = comms_send(comm, &msg, &send_done, NULL);
 	printf("send(%p)=%d\n", &msg, err);
