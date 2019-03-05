@@ -29,7 +29,7 @@ comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr
 	return COMMS_EINVAL;
 }
 
-am_id_t comms_get_packet_type(comms_layer_t* comms, comms_msg_t* msg) {
+am_id_t comms_get_packet_type(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_packet_type(cl, msg);
@@ -47,7 +47,7 @@ uint8_t comms_get_payload_max_length(comms_layer_t* comms) {
 	return ((comms_layer_iface_t*)comms)->get_payload_max_length((comms_layer_iface_t*)comms);
 }
 
-uint8_t comms_get_payload_length(comms_layer_t* comms, comms_msg_t* msg) {
+uint8_t comms_get_payload_length(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_payload_length(cl, msg);
@@ -60,7 +60,7 @@ void comms_set_payload_length(comms_layer_t* comms, comms_msg_t* msg, uint8_t le
 		cl->set_payload_length(cl, msg, length);
 	}
 }
-void* comms_get_payload(comms_layer_t* comms, comms_msg_t* msg, uint8_t length) {
+void* comms_get_payload(comms_layer_t* comms, const comms_msg_t* msg, uint8_t length) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_payload(cl, msg, length);
@@ -68,7 +68,7 @@ void* comms_get_payload(comms_layer_t* comms, comms_msg_t* msg, uint8_t length) 
 	return NULL;
 }
 
-uint8_t comms_get_retries(comms_layer_t* comms, comms_msg_t* msg) {
+uint8_t comms_get_retries(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_retries(cl, msg);
@@ -83,7 +83,7 @@ comms_error_t comms_set_retries(comms_layer_t* comms, comms_msg_t* msg, uint8_t 
 	return COMMS_EINVAL;
 }
 
-uint8_t comms_get_retries_used(comms_layer_t* comms, comms_msg_t* msg) {
+uint8_t comms_get_retries_used(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_retries_used(cl, msg);
@@ -98,7 +98,7 @@ comms_error_t comms_set_retries_used(comms_layer_t* comms, comms_msg_t* msg, uin
 	return COMMS_EINVAL;
 }
 
-uint32_t comms_get_timeout(comms_layer_t* comms, comms_msg_t* msg) {
+uint32_t comms_get_timeout(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_timeout(cl, msg);
@@ -113,7 +113,7 @@ comms_error_t comms_set_timeout(comms_layer_t* comms, comms_msg_t* msg, uint32_t
 	return COMMS_EINVAL;
 }
 
-bool comms_is_ack_requested(comms_layer_t* comms, comms_msg_t* msg) {
+bool comms_is_ack_requested(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->is_ack_requested(cl, msg);
@@ -127,7 +127,7 @@ comms_error_t comms_set_ack_requested(comms_layer_t* comms, comms_msg_t* msg, bo
 	}
 	return COMMS_EINVAL;
 }
-bool comms_ack_received(comms_layer_t* comms, comms_msg_t* msg) {
+bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->ack_received(cl, msg);
@@ -142,14 +142,14 @@ comms_error_t comms_set_event_time(comms_layer_t* comms, comms_msg_t* msg, uint3
 	}
 	return COMMS_EINVAL;
 }
-uint32_t comms_get_event_time(comms_layer_t* comms, comms_msg_t* msg) {
+uint32_t comms_get_event_time(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_event_time(cl, msg);
 	}
 	return 0;
 }
-bool comms_event_time_valid(comms_layer_t* comms, comms_msg_t* msg) {
+bool comms_event_time_valid(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->event_time_valid(cl, msg);
@@ -157,7 +157,7 @@ bool comms_event_time_valid(comms_layer_t* comms, comms_msg_t* msg) {
 	return false;
 }
 
-uint8_t comms_get_lqi(comms_layer_t* comms, comms_msg_t* msg) {
+uint8_t comms_get_lqi(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_lqi(cl, msg);
@@ -171,7 +171,7 @@ void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi) {
 	}
 }
 
-int8_t comms_get_rssi(comms_layer_t* comms, comms_msg_t* msg) {
+int8_t comms_get_rssi(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_rssi(cl, msg);

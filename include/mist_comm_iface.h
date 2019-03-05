@@ -12,36 +12,36 @@ typedef comms_error_t comms_send_f(comms_layer_iface_t*, comms_msg_t*, comms_sen
 typedef comms_error_t comms_register_recv_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*, am_id_t);
 typedef comms_error_t comms_deregister_recv_f(comms_layer_iface_t*, comms_receiver_t*);
 
-typedef am_id_t comms_get_packet_type_f(comms_layer_iface_t*, comms_msg_t*);
+typedef am_id_t comms_get_packet_type_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_packet_type_f(comms_layer_iface_t*, comms_msg_t*, am_id_t);
 
 typedef uint8_t comms_get_payload_max_length_f(comms_layer_iface_t*);
-typedef uint8_t comms_get_payload_length_f(comms_layer_iface_t*, comms_msg_t*);
+typedef uint8_t comms_get_payload_length_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_payload_length_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
-typedef void* comms_get_payload_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
+typedef void* comms_get_payload_f(comms_layer_iface_t*, const comms_msg_t*, uint8_t);
 
-typedef uint8_t comms_get_retries_f(comms_layer_iface_t*, comms_msg_t*);
+typedef uint8_t comms_get_retries_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef comms_error_t comms_set_retries_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
 
-typedef uint8_t comms_get_retries_used_f(comms_layer_iface_t*, comms_msg_t*);
+typedef uint8_t comms_get_retries_used_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef comms_error_t comms_set_retries_used_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
 
-typedef uint32_t comms_get_timeout_f(comms_layer_iface_t*, comms_msg_t*);
+typedef uint32_t comms_get_timeout_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef comms_error_t comms_set_timeout_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
 
-typedef bool comms_is_ack_requested_f(comms_layer_iface_t*, comms_msg_t*);
+typedef bool comms_is_ack_requested_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef comms_error_t comms_set_ack_requested_f(comms_layer_iface_t*, comms_msg_t*, bool);
 
-typedef bool comms_ack_received_f(comms_layer_iface_t*, comms_msg_t*);
+typedef bool comms_ack_received_f(comms_layer_iface_t*, const comms_msg_t*);
 
 typedef comms_error_t comms_set_event_time_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
-typedef uint32_t comms_get_event_time_f(comms_layer_iface_t*, comms_msg_t*);
-typedef bool comms_event_time_valid_f(comms_layer_iface_t*, comms_msg_t*);
+typedef uint32_t comms_get_event_time_f(comms_layer_iface_t*, const comms_msg_t*);
+typedef bool comms_event_time_valid_f(comms_layer_iface_t*, const comms_msg_t*);
 
-typedef uint8_t comms_get_lqi_f(comms_layer_iface_t*, comms_msg_t*);
+typedef uint8_t comms_get_lqi_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_lqi_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
 
-typedef int8_t comms_get_rssi_f(comms_layer_iface_t*, comms_msg_t*);
+typedef int8_t comms_get_rssi_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_rssi_f(comms_layer_iface_t*, comms_msg_t*, int8_t);
 
 // -----------------------------------------------------------------------------

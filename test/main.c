@@ -40,12 +40,11 @@ comms_error_t fake_comms_send2(comms_layer_iface_t* comms, comms_msg_t* msg, com
 	return COMMS_EBUSY;
 }
 
-comms_msg_t* fake_comms_receive(comms_layer_t* comms, comms_msg_t* msg, void* user) {
+void fake_comms_receive(comms_layer_t* comms, const comms_msg_t* msg, void* user) {
 	printf("rcv %p, %p, %p\n", comms, msg, user);
 	printf("%04X->%04X %s\n", comms_am_get_source(comms, msg),
 		comms_am_get_destination(comms, msg),
 		(char*)comms_get_payload(comms, msg, comms_get_payload_length(comms, msg)));
-	return msg;
 }
 
 void send_done(comms_layer_t* comms, comms_msg_t* msg, comms_error_t result, void* user) {

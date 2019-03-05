@@ -22,7 +22,7 @@ static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_
 	return COMMS_FAIL;
 }
 
-static am_id_t am_comms_get_packet_type(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static am_id_t am_comms_get_packet_type(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return msg->body.type;
 }
 static void am_comms_set_packet_type(comms_layer_iface_t* comms, comms_msg_t* msg, am_id_t ptype) {
@@ -32,20 +32,20 @@ static void am_comms_set_packet_type(comms_layer_iface_t* comms, comms_msg_t* ms
 static uint8_t am_comms_get_payload_max_length(comms_layer_iface_t* comms) {
 	return 114;
 }
-static uint8_t am_comms_get_payload_length(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static uint8_t am_comms_get_payload_length(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return msg->body.length;
 }
 static void am_comms_set_payload_length(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t length) {
 	msg->body.length = length;
 }
-static void* am_comms_get_payload(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t length) {
+static void* am_comms_get_payload(comms_layer_iface_t* comms, const comms_msg_t* msg, uint8_t length) {
 	if(length < sizeof(msg->body.payload)) {
 		return (void*)(msg->body.payload);
 	}
 	return NULL;
 }
 
-static uint8_t am_comms_get_retries(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static uint8_t am_comms_get_retries(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->retries;
 }
 static comms_error_t am_comms_set_retries(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t count) {
@@ -53,7 +53,7 @@ static comms_error_t am_comms_set_retries(comms_layer_iface_t* comms, comms_msg_
 	return COMMS_SUCCESS;
 }
 
-static uint8_t am_comms_get_retries_used(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static uint8_t am_comms_get_retries_used(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->sent;
 }
 static comms_error_t am_comms_set_retries_used(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t count) {
@@ -61,7 +61,7 @@ static comms_error_t am_comms_set_retries_used(comms_layer_iface_t* comms, comms
 	return COMMS_SUCCESS;
 }
 
-static uint32_t am_comms_get_timeout(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static uint32_t am_comms_get_timeout(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->timeout;
 }
 static comms_error_t am_comms_set_timeout(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t timeout) {
@@ -69,35 +69,35 @@ static comms_error_t am_comms_set_timeout(comms_layer_iface_t* comms, comms_msg_
 	return COMMS_SUCCESS;
 }
 
-static bool am_comms_is_ack_requested(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static bool am_comms_is_ack_requested(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_requested;
 }
 static comms_error_t am_comms_set_ack_requested(comms_layer_iface_t* comms, comms_msg_t* msg, bool required) {
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_requested = required;
 	return COMMS_SUCCESS;
 }
-static bool am_comms_ack_received(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static bool am_comms_ack_received(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_received;
 }
 
 static comms_error_t am_comms_set_event_time(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t evt) {
 	return COMMS_EINVAL;
 }
-static uint32_t am_comms_get_event_time(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static uint32_t am_comms_get_event_time(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time;
 }
-static bool am_comms_event_time_valid(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static bool am_comms_event_time_valid(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time_valid;
 }
 
-static uint8_t am_comms_get_lqi(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static uint8_t am_comms_get_lqi(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->lqi;
 }
 static void am_comms_set_lqi(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t lqi) {
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->lqi = lqi;
 }
 
-static int8_t am_comms_get_rssi(comms_layer_iface_t* comms, comms_msg_t* msg) {
+static int8_t am_comms_get_rssi(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->rssi;
 }
 static void am_comms_set_rssi(comms_layer_iface_t* comms, comms_msg_t* msg, int8_t rssi) {
@@ -105,21 +105,21 @@ static void am_comms_set_rssi(comms_layer_iface_t* comms, comms_msg_t* msg, int8
 }
 
 
-static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, comms_msg_t* msg) {
+static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, const comms_msg_t* msg) {
 	return *((am_addr_t*)msg->body.destination);
 }
 static void am_comms_set_destination(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t dest) {
 	*((am_addr_t*)msg->body.destination) = dest;
 }
 
-static am_addr_t am_comms_get_source(comms_layer_am_t* comms, comms_msg_t* msg) {
+static am_addr_t am_comms_get_source(comms_layer_am_t* comms, const comms_msg_t* msg) {
 	return *((am_addr_t*)msg->body.source);
 }
 static void am_comms_set_source(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t source) {
 	*((am_addr_t*)msg->body.source) = source;
 }
 
-am_addr_t comms_am_get_destination(comms_layer_t* comms, comms_msg_t* msg) {
+am_addr_t comms_am_get_destination(comms_layer_t* comms, const comms_msg_t* msg) {
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
 	return amcomms->am_get_destination(amcomms, msg);
 }
@@ -128,7 +128,7 @@ void comms_am_set_destination(comms_layer_t* comms, comms_msg_t* msg, am_addr_t 
 	amcomms->am_set_destination(amcomms, msg, dest);
 }
 
-am_addr_t comms_am_get_source(comms_layer_t* comms, comms_msg_t* msg) {
+am_addr_t comms_am_get_source(comms_layer_t* comms, const comms_msg_t* msg) {
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
 	return amcomms->am_get_source(amcomms, msg);
 }

@@ -52,10 +52,7 @@ typedef void comms_send_done_f(comms_layer_t* comms, comms_msg_t* msg, comms_err
 
 // Signalled when a message is received. Functions of this type must first be
 // registered with a communications layer with comms_register_recv.
-typedef comms_msg_t* comms_receive_f(comms_layer_t* comms, comms_msg_t* msg, void* user);
-// ???
-// do we want to allow message swapping?
-// ???
+typedef void comms_receive_f(comms_layer_t* comms, const comms_msg_t* msg, void* user);
 
 // -----------------------------------------------------------------------------
 
@@ -91,37 +88,37 @@ comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr
 // -----------------------------------------------------------------------------
 
 // Packet type -----------------------------------------------------------------
-am_id_t comms_get_packet_type(comms_layer_t* comms, comms_msg_t* msg);
+am_id_t comms_get_packet_type(comms_layer_t* comms, const comms_msg_t* msg);
 void comms_set_packet_type(comms_layer_t* comms, comms_msg_t* msg, am_id_t ptype);
 // -----------------------------------------------------------------------------
 
 // Message payload manipulation functions --------------------------------------
 uint8_t comms_get_payload_max_length(comms_layer_t* comms);
 
-uint8_t comms_get_payload_length(comms_layer_t* comms, comms_msg_t* msg);
+uint8_t comms_get_payload_length(comms_layer_t* comms, const comms_msg_t* msg);
 void comms_set_payload_length(comms_layer_t* comms, comms_msg_t* msg, uint8_t length);
 
-void* comms_get_payload(comms_layer_t* comms, comms_msg_t* msg, uint8_t length);
+void* comms_get_payload(comms_layer_t* comms, const comms_msg_t* msg, uint8_t length);
 // ???
 // Do we want support for larger payloads - uint16_t length?
 // ???
 // -----------------------------------------------------------------------------
 
 // PacketLink & Acknowledgements
-uint8_t comms_get_retries(comms_layer_t* comms, comms_msg_t* msg);
+uint8_t comms_get_retries(comms_layer_t* comms, const comms_msg_t* msg);
 comms_error_t comms_set_retries(comms_layer_t* comms, comms_msg_t* msg, uint8_t count);
 
-uint8_t comms_get_retries_used(comms_layer_t* comms, comms_msg_t* msg);
+uint8_t comms_get_retries_used(comms_layer_t* comms, const comms_msg_t* msg);
 comms_error_t comms_set_retries_used(comms_layer_t* comms, comms_msg_t* msg, uint8_t count);
 
-uint32_t comms_get_timeout(comms_layer_t* comms, comms_msg_t* msg);
+uint32_t comms_get_timeout(comms_layer_t* comms, const comms_msg_t* msg);
 comms_error_t comms_set_timeout(comms_layer_t* comms, comms_msg_t* msg, uint32_t timeout);
 
-bool comms_is_ack_required(comms_layer_t* comms, comms_msg_t* msg);
+bool comms_is_ack_required(comms_layer_t* comms, const comms_msg_t* msg);
 comms_error_t comms_set_ack_required(comms_layer_t* comms, comms_msg_t* msg, bool required);
 
 // Check delivery for both PacketLink and simple Ack use cases
-bool comms_ack_received(comms_layer_t* comms, comms_msg_t* msg);
+bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
 // TimeSync messaging
@@ -131,19 +128,19 @@ bool comms_ack_received(comms_layer_t* comms, comms_msg_t* msg);
 comms_error_t comms_set_event_time(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt);
 
 // Check that event time is valid with comms_event_time_valid.
-uint32_t comms_get_event_time(comms_layer_t* comms, comms_msg_t* msg);
+uint32_t comms_get_event_time(comms_layer_t* comms, const comms_msg_t* msg);
 
 // return TRUE if message has valid event time
-bool comms_event_time_valid(comms_layer_t* comms, comms_msg_t* msg);
+bool comms_event_time_valid(comms_layer_t* comms, const comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
 // Message Quality
-uint8_t comms_get_lqi(comms_layer_t* comms, comms_msg_t* msg);
+uint8_t comms_get_lqi(comms_layer_t* comms, const comms_msg_t* msg);
 void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi);
 // ??? standardize on 0-100 instead of 0-255, because for example CC1101 LQI goes from 0-127 and is inverse to Atmel RFX.
 
 // Value in dBm
-int8_t comms_get_rssi(comms_layer_t* comms, comms_msg_t* msg);
+int8_t comms_get_rssi(comms_layer_t* comms, const comms_msg_t* msg);
 void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
 // -----------------------------------------------------------------------------
 
