@@ -29,6 +29,20 @@ comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr
 	return COMMS_EINVAL;
 }
 
+am_id_t comms_get_packet_type(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_packet_type(cl, msg);
+	}
+	return 0;
+}
+void comms_set_packet_type(comms_layer_t* comms, comms_msg_t* msg, am_id_t ptype) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		cl->set_packet_type(cl, msg, ptype);
+	}
+}
+
 uint8_t comms_get_payload_max_length(comms_layer_t* comms) {
 	return ((comms_layer_iface_t*)comms)->get_payload_max_length((comms_layer_iface_t*)comms);
 }

@@ -48,7 +48,7 @@ typedef struct comms_msg comms_msg_t;
 // to the client. A function of this type must be passed with every call to the
 // comms_send function and the passed function will be called in the future if
 // the comms_send returns a successful result (message is accepted).
-typedef void comms_send_done_f(void* user, comms_msg_t* msg, comms_error_t result);
+typedef void comms_send_done_f(comms_layer_t* comms, comms_msg_t* msg, comms_error_t result, void* user);
 
 // Signalled when a message is received. Functions of this type must first be
 // registered with a communications layer with comms_register_recv.
@@ -88,6 +88,11 @@ comms_error_t comms_register_recv(comms_layer_t* comms, comms_receiver_t* rcvr, 
 // Remove an already registered receiver.
 comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr);
 
+// -----------------------------------------------------------------------------
+
+// Packet type -----------------------------------------------------------------
+am_id_t comms_get_packet_type(comms_layer_t* comms, comms_msg_t* msg);
+void comms_set_packet_type(comms_layer_t* comms, comms_msg_t* msg, am_id_t ptype);
 // -----------------------------------------------------------------------------
 
 // Message payload manipulation functions --------------------------------------

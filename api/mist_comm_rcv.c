@@ -2,7 +2,7 @@
 #include <string.h>
 
 static comms_error_t rcv_comms_register_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void* user, am_id_t amid) {
-	rcvr->application = amid;
+	rcvr->type = amid;
 	rcvr->callback = func;
 	rcvr->user = user;
 	rcvr->next = NULL;
@@ -41,14 +41,14 @@ static comms_error_t rcv_comms_deregister_recv(comms_layer_iface_t* comms, comms
 
 comms_msg_t* comms_deliver(comms_layer_t* comms, comms_msg_t* msg) {
 	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
-	uint16_t application = msg->body.application;
+	am_id_t ptype = comms_get_packet_type(comms, msg);
 
 	comms_msg_t copy;
 	bool copied = false;
 
 	comms_receiver_t* receiver = cl->receivers;
 	for(receiver=cl->receivers;receiver!=NULL;receiver=receiver->next) {
-		if(receiver->application == application) {
+		if(receiver->type == ptype) {
 			if(copied) { // msg has been received from user and may be modified
 				memcpy(msg, &copy, sizeof(comms_msg_t));
 			}

@@ -22,6 +22,13 @@ static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_
 	return COMMS_FAIL;
 }
 
+static am_id_t am_comms_get_packet_type(comms_layer_iface_t* comms, comms_msg_t* msg) {
+	return msg->body.type;
+}
+static void am_comms_set_packet_type(comms_layer_iface_t* comms, comms_msg_t* msg, am_id_t ptype) {
+	msg->body.type = ptype;
+}
+
 static uint8_t am_comms_get_payload_max_length(comms_layer_iface_t* comms) {
 	return 114;
 }
@@ -145,6 +152,9 @@ comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
 	//comms->register_recv = &am_comms_register_recv;
 	//comms->deregister_recv = &am_comms_deregister_recv;
 	comms_initialize_rcvr_management(comms);
+
+	comms->get_packet_type = &am_comms_get_packet_type;
+	comms->set_packet_type = &am_comms_set_packet_type;
 
 	comms->get_payload_max_length = &am_comms_get_payload_max_length;
 	comms->get_payload_length = &am_comms_get_payload_length;

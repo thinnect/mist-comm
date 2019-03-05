@@ -5,7 +5,7 @@
 
 typedef struct comms_msg {
 	struct {
-		uint16_t application; // AMID, port?
+		am_id_t type; // AMID, port?
 		uint8_t source[COMMS_MSG_ADDRESSING_SIZE];
 		uint8_t destination[COMMS_MSG_ADDRESSING_SIZE];
 		uint8_t header[COMMS_MSG_HEADER_SIZE];
@@ -20,7 +20,7 @@ typedef struct comms_msg {
 } comms_msg_t;
 
 typedef struct comms_receiver { // Members are private, should not be accessed
-	uint16_t          application;
+	am_id_t           type;
 	comms_receive_f*  callback;
 	void*             user;
 	comms_receiver_t* next;
