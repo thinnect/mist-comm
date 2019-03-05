@@ -18,3 +18,7 @@
 * Thoughts about where to implement retries ...
 	* further down the line we probably want an e2e "reliable" transport
 
+* Radio startup and shutdown generalization - multistart & all stop?
+
+* Radio channels - this seems like a link-layer issue and would be handled
+  specifically - most apps should have no bussiness changing the channel?
