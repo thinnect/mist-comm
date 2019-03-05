@@ -14,12 +14,6 @@ comms_msg_t* _msg1 = NULL;
 comms_send_done_f* _sdf1 = NULL;
 void* _user1 = NULL;
 
-comms_msg_t mmsg2;
-comms_msg_t* mcopy2 = &mmsg2;
-comms_msg_t* _msg2 = NULL;
-comms_send_done_f* _sdf2 = NULL;
-void* _user2 = NULL;
-
 comms_error_t fake_comms_send1(comms_layer_iface_t* comms, comms_msg_t* msg, comms_send_done_f* sdf, void* user) {
 	if(_msg1 == NULL) {
 		_msg1 = msg;
@@ -29,6 +23,12 @@ comms_error_t fake_comms_send1(comms_layer_iface_t* comms, comms_msg_t* msg, com
 	}
 	return COMMS_EBUSY;
 }
+
+comms_msg_t mmsg2;
+comms_msg_t* mcopy2 = &mmsg2;
+comms_msg_t* _msg2 = NULL;
+comms_send_done_f* _sdf2 = NULL;
+void* _user2 = NULL;
 
 comms_error_t fake_comms_send2(comms_layer_iface_t* comms, comms_msg_t* msg, comms_send_done_f* sdf, void* user) {
 	if(_msg2 == NULL) {

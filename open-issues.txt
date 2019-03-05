@@ -1,0 +1,20 @@
+
+* Addressing needs to be generalized - EUI addressing at the core, but support
+  for link locals. Special union typedef? void* pointer seems unclear, where do
+  you get the size of the actual thing on your platform?
+
+* Should am group be exposed in some generic way - do we need this concept for something?
+
+* Think AM id is too short, but if we expand it, how do we handle compatibility
+  with legacy applications. Protocol / application / type / port ... what would
+  be the best term to use for the general concept?
+
+* Timestamping should really be marked somehow in packet, previously "special"
+  AM ID 0x3D was used, but does not seem like a good way forward. Perhaps just
+  reserve the timestamp area always?
+
+* Timestamping needs clock source - must be provided somehow.
+
+* Thoughts about where to implement retries ...
+	* further down the line we probably want an e2e "reliable" transport
+
