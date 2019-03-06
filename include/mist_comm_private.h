@@ -3,7 +3,7 @@
 
 #include "mist_comm.h"
 
-typedef struct comms_msg {
+struct comms_msg {
 	struct {
 		am_id_t type; // AMID, port?
 		uint8_t source[COMMS_MSG_ADDRESSING_SIZE];
@@ -17,13 +17,13 @@ typedef struct comms_msg {
 		uint8_t metadata[COMMS_MSG_METADATA_SIZE];
 	} body;
 	comms_msg_t* next; // ... maybe, could be very useful for transitioning through layers
-} comms_msg_t;
+};
 
-typedef struct comms_receiver { // Members are private, should not be accessed
+struct comms_receiver { // Members are private, should not be accessed
 	am_id_t           type;
 	comms_receive_f*  callback;
 	void*             user;
 	comms_receiver_t* next;
-} comms_receiver_t;
+};
 
 #endif//MIST_COMM_PRIVATE_H_
