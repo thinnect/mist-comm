@@ -21,7 +21,7 @@ typedef struct comms_am_msg_metadata {
 	uint8_t retries;
 	uint32_t timeout;
 
-	bool ack_requested;
+	bool ack_required;
 	bool ack_received;
 
 	bool event_time_valid;

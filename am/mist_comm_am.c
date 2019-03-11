@@ -69,11 +69,11 @@ static comms_error_t am_comms_set_timeout(comms_layer_iface_t* comms, comms_msg_
 	return COMMS_SUCCESS;
 }
 
-static bool am_comms_is_ack_requested(comms_layer_iface_t* comms, const comms_msg_t* msg) {
-	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_requested;
+static bool am_comms_is_ack_required(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_required;
 }
-static comms_error_t am_comms_set_ack_requested(comms_layer_iface_t* comms, comms_msg_t* msg, bool required) {
-	((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_requested = required;
+static comms_error_t am_comms_set_ack_required(comms_layer_iface_t* comms, comms_msg_t* msg, bool required) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_required = required;
 	return COMMS_SUCCESS;
 }
 static bool am_comms_ack_received(comms_layer_iface_t* comms, const comms_msg_t* msg) {
@@ -170,8 +170,8 @@ comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
 	comms->get_timeout = &am_comms_get_timeout;
 	comms->set_timeout = &am_comms_set_timeout;
 
-	comms->is_ack_requested = &am_comms_is_ack_requested;
-	comms->set_ack_requested = &am_comms_set_ack_requested;
+	comms->is_ack_required = &am_comms_is_ack_required;
+	comms->set_ack_required = &am_comms_set_ack_required;
 
 	comms->ack_received = &am_comms_ack_received;
 
