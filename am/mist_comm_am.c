@@ -5,6 +5,15 @@
 
 #include <stdbool.h>
 
+am_addr_t comms_am_address(comms_layer_t* comms) {
+	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
+	amcomms->am_address(amcomms);
+}
+
+static am_addr_t am_comms_addr(comms_layer_am_t* comms) {
+	return comms->am_addr;
+}
+
 static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) {
 	msg->body.length = 0;
 }
@@ -137,7 +146,7 @@ void comms_am_set_source(comms_layer_t* comms, comms_msg_t* msg, am_addr_t sourc
 	amcomms->am_set_source(amcomms, msg, source);
 }
 
-comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
+comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address, comms_send_f* sender) {
 	comms_layer_iface_t* comms = (comms_layer_iface_t*)layer;
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)layer;
 
@@ -189,6 +198,9 @@ comms_error_t comms_am_create(comms_layer_t* layer, comms_send_f* sender) {
 	amcomms->am_set_destination = &am_comms_set_destination;
 	amcomms->am_get_source = &am_comms_get_source;
 	amcomms->am_set_source = &am_comms_set_source;
+
+	amcomms->am_address = &am_comms_addr;
+	amcomms->am_addr = address;
 
 	return COMMS_SUCCESS;
 }
