@@ -12,7 +12,7 @@ typedef void comms_am_set_destination_f(comms_layer_am_t*, comms_msg_t*, am_addr
 typedef am_addr_t comms_am_get_source_f(comms_layer_am_t*, const comms_msg_t*);
 typedef void comms_am_set_source_f(comms_layer_am_t*, comms_msg_t*, am_addr_t);
 
-typedef struct comms_layer_am {
+struct comms_layer_am {
 	comms_layer_iface_t base;
 
 	comms_am_get_destination_f* am_get_destination;
@@ -20,7 +20,7 @@ typedef struct comms_layer_am {
 
 	comms_am_get_source_f* am_get_source;
 	comms_am_set_source_f* am_set_source;
-} comms_layer_am_t;
+};
 
 // Message manipulation functions for ActiveMessage layer ----------------------
 am_addr_t comms_am_get_destination(comms_layer_t* comms, const comms_msg_t* msg);

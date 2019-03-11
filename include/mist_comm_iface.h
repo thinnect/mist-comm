@@ -46,7 +46,7 @@ typedef void comms_set_rssi_f(comms_layer_iface_t*, comms_msg_t*, int8_t);
 
 // -----------------------------------------------------------------------------
 
-typedef struct comms_layer_iface {
+struct comms_layer_iface {
 	comms_layer_t layer; // Type info
 
 	comms_init_message_f* init_message;
@@ -90,6 +90,6 @@ typedef struct comms_layer_iface {
 	// Receivers
 	comms_receiver_t* receivers; // Linked list of registered receivers
 
-} comms_layer_iface_t;
+};
 
 #endif//MIST_COMM_IFACE_H_
