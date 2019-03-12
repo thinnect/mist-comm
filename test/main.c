@@ -63,9 +63,9 @@ int main() {
 	comms_error_t err;
 	uint8_t length = strlen(hello)+1;
 
-	err = comms_am_create(radio1, &fake_comms_send1);
+	err = comms_am_create(radio1, 1, &fake_comms_send1);
 	printf("create1=%d\n", err);
-	err = comms_am_create(radio2, &fake_comms_send2);
+	err = comms_am_create(radio2, 2, &fake_comms_send2);
 	printf("create2=%d\n", err);
 
 	comms_register_recv(radio1, &rcv1, &fake_comms_receive, NULL, 0xAB);
@@ -73,8 +73,8 @@ int main() {
 
 	comms_init_message(radio1, &msg);
 	comms_set_packet_type(radio1, &msg, 0xAB);
-	comms_am_set_destination(radio1, &msg, 0xFFFF);
-	comms_am_set_source(radio1, &msg, 0x0001);
+	comms_am_set_destination(radio1, &msg, 0xCDEF);
+	comms_am_set_source(radio1, &msg, 0x1234);
 
 	payload = comms_get_payload(radio1, &msg, length);
 	if(payload == NULL) {
