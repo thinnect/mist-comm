@@ -90,7 +90,9 @@ static bool am_comms_ack_received(comms_layer_iface_t* comms, const comms_msg_t*
 }
 
 static comms_error_t am_comms_set_event_time(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t evt) {
-	return COMMS_EINVAL;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time = evt;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time_valid = true;
+	return COMMS_SUCCESS;
 }
 static uint32_t am_comms_get_event_time(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time;
