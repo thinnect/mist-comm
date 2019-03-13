@@ -15,7 +15,16 @@ static am_addr_t am_comms_addr(comms_layer_am_t* comms) {
 }
 
 static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) {
+	comms_am_msg_metadata_t* metadata = (comms_am_msg_metadata_t*)(msg->body.metadata);
 	msg->body.length = 0;
+	metadata->event_time_valid = false;
+	metadata->ack_required = false;
+	metadata->ack_received = false;
+	metadata->timeout = 0;
+	metadata->retries = 0;
+	metadata->sent = 0;
+	metadata->lqi= 0;
+	metadata->rssi = -128;
 }
 
 static comms_error_t am_comms_send(comms_layer_iface_t* comms, comms_msg_t* msg, comms_send_done_f* sdf, void* user) {
@@ -206,3 +215,4 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address, comms_sen
 
 	return COMMS_SUCCESS;
 }
+
