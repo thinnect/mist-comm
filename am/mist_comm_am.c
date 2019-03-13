@@ -7,7 +7,7 @@
 
 am_addr_t comms_am_address(comms_layer_t* comms) {
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
-	amcomms->am_address(amcomms);
+	return amcomms->am_address(amcomms);
 }
 
 static am_addr_t am_comms_addr(comms_layer_am_t* comms) {
