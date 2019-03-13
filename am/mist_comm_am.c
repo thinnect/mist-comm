@@ -31,14 +31,14 @@ static comms_error_t am_comms_send(comms_layer_iface_t* comms, comms_msg_t* msg,
 	return COMMS_FAIL;
 }
 
-static comms_error_t am_comms_register_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user, am_id_t amid) {
-	// there is a suitable implementation in mist_comm_rcv.c
-	return COMMS_FAIL;
-}
-static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr) {
-	// there is a suitable implementation in mist_comm_rcv.c
-	return COMMS_FAIL;
-}
+//static comms_error_t am_comms_register_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user, am_id_t amid) {
+//	// there is a suitable implementation in mist_comm_rcv.c
+//	return COMMS_FAIL;
+//}
+//static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr) {
+//	// there is a suitable implementation in mist_comm_rcv.c
+//	return COMMS_FAIL;
+//}
 
 static am_id_t am_comms_get_packet_type(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return msg->body.type;
