@@ -119,6 +119,8 @@ comms_error_t comms_set_ack_required(comms_layer_t* comms, comms_msg_t* msg, boo
 
 // Check delivery for both PacketLink and simple Ack use cases
 bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg);
+
+void _comms_set_ack_received(comms_layer_t* comms, comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
 // Message timestamping

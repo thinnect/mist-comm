@@ -134,6 +134,12 @@ bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg) {
 	}
 	return false;
 }
+void _comms_set_ack_received(comms_layer_t* comms, comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		cl->set_ack_received(cl, msg);
+	}
+}
 
 comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp) {
 	if((msg != NULL)&&(comms != NULL)) {

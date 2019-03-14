@@ -98,6 +98,9 @@ static comms_error_t am_comms_set_ack_required(comms_layer_iface_t* comms, comms
 static bool am_comms_ack_received(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_received;
 }
+static void am_comms_set_ack_received(comms_layer_iface_t* comms, comms_msg_t* msg) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->ack_received = true;
+}
 
 static comms_error_t am_comms_set_timestamp(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t timestamp) {
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp = timestamp;
@@ -205,8 +208,8 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address, comms_sen
 
 	comms->is_ack_required = &am_comms_is_ack_required;
 	comms->set_ack_required = &am_comms_set_ack_required;
-
 	comms->ack_received = &am_comms_ack_received;
+	comms->set_ack_received = &am_comms_set_ack_received;
 
 	comms->set_timestamp = &am_comms_set_timestamp;
 	comms->get_timestamp = &am_comms_get_timestamp;

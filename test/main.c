@@ -78,6 +78,22 @@ bool test(comms_layer_t* radio) {
 		return false;
 	}
 
+	if(comms_is_ack_required(radio, &msg) != false) {
+		return false;
+	}
+	comms_set_ack_required(radio, &msg, true);
+	if(comms_is_ack_required(radio, &msg) != true) {
+		return false;
+	}
+
+	if(comms_ack_received(radio, &msg) != false) {
+		return false;
+	}
+	_comms_set_ack_received(radio, &msg);
+	if(comms_ack_received(radio, &msg) != true) {
+		return false;
+	}
+
 	return true;
 }
 
