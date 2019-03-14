@@ -135,6 +135,28 @@ bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg) {
 	return false;
 }
 
+comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_timestamp(cl, msg, timestamp);
+	}
+	return COMMS_EINVAL;
+}
+uint32_t comms_get_timestamp(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_timestamp(cl, msg);
+	}
+	return 0;
+}
+bool comms_timestamp_valid(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->timestamp_valid(cl, msg);
+	}
+	return false;
+}
+
 comms_error_t comms_set_event_time(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;

@@ -121,6 +121,20 @@ comms_error_t comms_set_ack_required(comms_layer_t* comms, comms_msg_t* msg, boo
 bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
+// Message timestamping
+// Timestamps are microseconds local clock. Indicate either message reception or
+// transmission time.
+
+// Check that the timestamp is valid with comms_timestamp_valid.
+uint32_t comms_get_timestamp(comms_layer_t* comms, const comms_msg_t* msg);
+
+// return TRUE if message has valid timestamp
+bool comms_timestamp_valid(comms_layer_t* comms, const comms_msg_t* msg);
+
+// Set timestamp (low level - on receive and on send)
+comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp);
+// -----------------------------------------------------------------------------
+
 // TimeSync messaging
 // Event time is microseconds local clock
 

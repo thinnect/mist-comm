@@ -4,10 +4,6 @@
 #include "mist_comm_basics.h"
 
 typedef struct comms_am_msg_header {
-	am_addr_t source;
-	am_addr_t destination;
-	am_group_t group;
-	am_id_t amid;
 } comms_am_msg_header_t;
 
 typedef struct comms_am_msg_footer {
@@ -23,6 +19,9 @@ typedef struct comms_am_msg_metadata {
 
 	bool ack_required;
 	bool ack_received;
+
+	bool timestamp_valid;
+	uint32_t timestamp;
 
 	bool event_time_valid;
 	uint32_t event_time;

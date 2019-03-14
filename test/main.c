@@ -51,10 +51,40 @@ void send_done(comms_layer_t* comms, comms_msg_t* msg, comms_error_t result, voi
 	printf("sd %p, %p, %u, %p\n", comms, msg, result, user);
 }
 
+bool test(comms_layer_t* radio) {
+	comms_msg_t msg;
+
+	comms_init_message(radio, &msg);
+
+	if(comms_timestamp_valid(radio, &msg) == true) {
+		return false;
+	}
+	comms_set_timestamp(radio, &msg, 1234);
+	if(comms_timestamp_valid(radio, &msg) == false) {
+		return false;
+	}
+	if(comms_get_timestamp(radio, &msg) != 1234) {
+		return false;
+	}
+
+	if(comms_event_time_valid(radio, &msg) == true) {
+		return false;
+	}
+	comms_set_event_time(radio, &msg, 5678);
+	if(comms_event_time_valid(radio, &msg) == false) {
+		return false;
+	}
+	if(comms_get_event_time(radio, &msg) != 5678) {
+		return false;
+	}
+
+	return true;
+}
+
 int main() {
 	comms_msg_t msg;
-	uint8_t r1[256];
-	uint8_t r2[256];
+	uint8_t r1[512];
+	uint8_t r2[512];
 	uint8_t* payload;
 	comms_layer_t* radio1 = (comms_layer_t*)r1;
 	comms_layer_t* radio2 = (comms_layer_t*)r2;
@@ -67,6 +97,8 @@ int main() {
 	printf("create1=%d\n", err);
 	err = comms_am_create(radio2, 2, &fake_comms_send2);
 	printf("create2=%d\n", err);
+
+	printf("tests = %d\n", test(radio1));
 
 	comms_register_recv(radio1, &rcv1, &fake_comms_receive, NULL, 0xAB);
 	comms_register_recv(radio2, &rcv2, &fake_comms_receive, NULL, 0xAB);
@@ -81,11 +113,11 @@ int main() {
 		printf("payload NULL\n");
 		return 1;
 	}
-	strncpy(payload, hello, length);
+	memcpy(payload, hello, length);
 	comms_set_payload_length(radio1, &msg, length);
 
 	//printf("%x\n", comms_am_get_source(radio1, &msg));
-	//printf("%04X->%04X\n", comms_am_get_source(radio1, &msg), comms_am_get_destination(radio1, &msg));
+	printf("snd %04X->%04X\n", comms_am_get_source(radio1, &msg), comms_am_get_destination(radio1, &msg));
 
 	err = comms_send(radio1, &msg, &send_done, NULL);
 	printf("send(%p)=%d\n", &msg, err);
