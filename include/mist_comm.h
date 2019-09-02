@@ -48,7 +48,7 @@ typedef struct comms_msg comms_msg_t;
 // to the client. A function of this type must be passed with every call to the
 // comms_send function and the passed function will be called in the future if
 // the comms_send returns a successful result (message is accepted).
-typedef void comms_send_done_f(comms_layer_t* comms, comms_msg_t* msg, comms_error_t result, void* user);
+typedef void comms_send_done_f(comms_layer_t* comms, const comms_msg_t* msg, comms_error_t result, void* user);
 
 // Signalled when a message is received. Functions of this type must first be
 // registered with a communications layer with comms_register_recv.
