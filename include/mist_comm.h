@@ -28,7 +28,7 @@ typedef enum CommsErrors {
 	COMMS_EBUSY         = -5,
 	COMMS_EOFF          = -4,
 	COMMS_ECANCEL       = -3,
-	COMMS_SIZE          = -2,
+	COMMS_ESIZE         = -2,
 	COMMS_FAIL          = -1,
 
 	COMMS_SUCCESS       = 0,
@@ -162,6 +162,7 @@ void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
 
 // Other functions -------------------------------------------------------------
 // Deliver a message to all registered receivers
+// TODO the return value does not make sense any more
 comms_msg_t* comms_deliver(comms_layer_t* comms, comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
