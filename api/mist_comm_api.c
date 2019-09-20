@@ -29,6 +29,19 @@ comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr
 	return COMMS_EINVAL;
 }
 
+comms_error_t comms_register_snooper(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void* user) {
+	if((comms != NULL)&&(rcvr != NULL)&&(func != NULL)) {
+		return ((comms_layer_iface_t*)comms)->register_snooper((comms_layer_iface_t*)comms, rcvr, func, user);
+	}
+	return COMMS_EINVAL;
+}
+comms_error_t comms_deregister_snooper(comms_layer_t* comms, comms_receiver_t* rcvr) {
+	if(comms != NULL) {
+		return ((comms_layer_iface_t*)comms)->deregister_snooper((comms_layer_iface_t*)comms, rcvr);
+	}
+	return COMMS_EINVAL;
+}
+
 am_id_t comms_get_packet_type(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;

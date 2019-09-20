@@ -12,6 +12,9 @@ typedef comms_error_t comms_send_f(comms_layer_iface_t*, comms_msg_t*, comms_sen
 typedef comms_error_t comms_register_recv_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*, am_id_t);
 typedef comms_error_t comms_deregister_recv_f(comms_layer_iface_t*, comms_receiver_t*);
 
+typedef comms_error_t comms_register_snooper_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*);
+typedef comms_error_t comms_deregister_snooper_f(comms_layer_iface_t*, comms_receiver_t*);
+
 typedef am_id_t comms_get_packet_type_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_packet_type_f(comms_layer_iface_t*, comms_msg_t*, am_id_t);
 
@@ -59,6 +62,8 @@ struct comms_layer_iface {
 	comms_send_f* send;
 	comms_register_recv_f* register_recv;
 	comms_deregister_recv_f* deregister_recv;
+	comms_register_snooper_f* register_snooper;
+	comms_deregister_snooper_f* deregister_snooper;
 
 	comms_get_packet_type_f* get_packet_type;
 	comms_set_packet_type_f* set_packet_type;
@@ -98,6 +103,9 @@ struct comms_layer_iface {
 
 	// Receivers
 	comms_receiver_t* receivers; // Linked list of registered receivers
+
+	// Snoopers
+	comms_receiver_t* snoopers; // Linked list of registered snoopers
 
 };
 

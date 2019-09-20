@@ -85,6 +85,12 @@ comms_error_t comms_register_recv(comms_layer_t* comms, comms_receiver_t* rcvr, 
 // Remove an already registered receiver.
 comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr);
 
+// Snoopers don't look at the type (amid)
+comms_error_t comms_register_snooper(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user);
+
+// Remove an already registered snooper.
+comms_error_t comms_deregister_snooper(comms_layer_t* comms, comms_receiver_t* rcvr);
+
 // -----------------------------------------------------------------------------
 
 // Packet type -----------------------------------------------------------------
