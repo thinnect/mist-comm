@@ -5,6 +5,9 @@
 
 typedef struct comms_layer_iface comms_layer_iface_t;
 
+typedef comms_error_t comms_start_f(comms_layer_iface_t*, comms_status_change_f*, void*);
+typedef comms_error_t comms_stop_f(comms_layer_iface_t*, comms_status_change_f*, void*);
+
 typedef void comms_init_message_f(comms_layer_iface_t*, comms_msg_t*);
 
 typedef comms_error_t comms_send_f(comms_layer_iface_t*, comms_msg_t*, comms_send_done_f*, void*);
@@ -56,6 +59,9 @@ typedef void comms_set_rssi_f(comms_layer_iface_t*, comms_msg_t*, int8_t);
 
 struct comms_layer_iface {
 	comms_layer_t layer; // Type info
+
+	comms_start_f* start;
+	comms_stop_f* stop;
 
 	comms_init_message_f* init_message;
 

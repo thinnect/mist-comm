@@ -3,6 +3,24 @@
 
 #include <stdbool.h>
 
+comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user) {
+	if(NULL != comms) {
+		if(NULL != ((comms_layer_iface_t*)comms)->start) {
+			return ((comms_layer_iface_t*)comms)->start((comms_layer_iface_t*)comms, start_done, user);
+		}
+	}
+	return COMMS_EINVAL;
+}
+
+comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user) {
+	if(NULL != comms) {
+		if(NULL != ((comms_layer_iface_t*)comms)->stop) {
+			return ((comms_layer_iface_t*)comms)->stop((comms_layer_iface_t*)comms, stop_done, user);
+		}
+	}
+	return COMMS_EINVAL;
+}
+
 void comms_init_message(comms_layer_t* comms, comms_msg_t* msg) {
 	if((comms != NULL)&&(msg != NULL)) {
 		((comms_layer_iface_t*)comms)->init_message((comms_layer_iface_t*)comms, msg);

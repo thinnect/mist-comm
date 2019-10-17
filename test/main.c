@@ -109,9 +109,9 @@ int main() {
 	comms_error_t err;
 	uint8_t length = strlen(hello)+1;
 
-	err = comms_am_create(radio1, 1, &fake_comms_send1);
+	err = comms_am_create(radio1, 1, &fake_comms_send1, NULL, NULL);
 	printf("create1=%d\n", err);
-	err = comms_am_create(radio2, 2, &fake_comms_send2);
+	err = comms_am_create(radio2, 2, &fake_comms_send2, NULL, NULL);
 	printf("create2=%d\n", err);
 
 	printf("tests = %d\n", test(radio1));

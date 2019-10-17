@@ -40,7 +40,8 @@ void comms_am_set_source(comms_layer_t* comms, comms_msg_t* msg, am_addr_t sourc
 // -----------------------------------------------------------------------------
 
 // Create an ActiveMessage comms layer -----------------------------------------
-comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address, comms_send_f* sender);
+comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address, comms_send_f* sender,
+                              comms_start_f* startf, comms_stop_f* stopf);
 // -----------------------------------------------------------------------------
 
 #endif//MIST_COMM_AM_H_

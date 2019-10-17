@@ -35,10 +35,23 @@ typedef enum CommsErrors {
 	COMMS_ALREADY       = 1
 } comms_error_t;
 
+typedef enum CommsStatus {
+	COMMS_STOPPING = -2,
+	COMMS_STARTING = -1,
+	COMMS_STOPPED  =  0,
+	COMMS_STARTED  =  1
+} comms_status_t;
+
 typedef struct comms_layer {
 	uint8_t type;
 	// Everything else will embed at least this structure
 } comms_layer_t;
+
+typedef void comms_status_change_f(comms_layer_t* comms, comms_status_t status, void* user);
+
+comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user);
+
+comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user);
 
 typedef struct comms_msg comms_msg_t;
 
