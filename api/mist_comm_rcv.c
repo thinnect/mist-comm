@@ -3,7 +3,11 @@
 
 static comms_error_t rcv_comms_register_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void* user, am_id_t amid) {
 	comms_receiver_t** indirect;
-	for(indirect=&(comms->receivers); NULL != *indirect; indirect = &((*indirect)->next));
+	for(indirect=&(comms->receivers); NULL != *indirect; indirect = &((*indirect)->next)) {
+		if(*indirect == rcvr) {
+			return COMMS_ALREADY;
+		}
+	}
 	*indirect = rcvr;
 
 	rcvr->type = amid;
@@ -16,7 +20,11 @@ static comms_error_t rcv_comms_register_recv(comms_layer_iface_t* comms, comms_r
 
 static comms_error_t rcv_comms_register_snooper(comms_layer_iface_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void* user) {
 	comms_receiver_t** indirect;
-	for(indirect=&(comms->snoopers); NULL != *indirect; indirect = &((*indirect)->next));
+	for(indirect=&(comms->snoopers); NULL != *indirect; indirect = &((*indirect)->next)) {
+		if(*indirect == rcvr) {
+			return COMMS_ALREADY;
+		}
+	}
 	*indirect = rcvr;
 
 	rcvr->type = 0; // Not used
