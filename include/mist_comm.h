@@ -43,18 +43,13 @@ typedef enum CommsStatus {
 } comms_status_t;
 
 typedef struct comms_layer {
-	uint8_t type;
+	uint8_t type; // TODO type definitions
 	// Everything else will embed at least this structure
 } comms_layer_t;
 
-typedef void comms_status_change_f(comms_layer_t* comms, comms_status_t status, void* user);
-
-comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user);
-
-comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user);
-
-comms_status_t comms_status(comms_layer_t* comms);
-
+/*
+ * The comms message structure. Should only be manipulated through comms APIs.
+ */
 typedef struct comms_msg comms_msg_t;
 
 // Callback definitions --------------------------------------------------------
@@ -68,6 +63,35 @@ typedef void comms_send_done_f(comms_layer_t* comms, comms_msg_t* msg, comms_err
 // Signalled when a message is received. Functions of this type must first be
 // registered with a communications layer with comms_register_recv.
 typedef void comms_receive_f(comms_layer_t* comms, const comms_msg_t* msg, void* user);
+
+// Signalled when a status change is requested and completed.
+typedef void comms_status_change_f(comms_layer_t* comms, comms_status_t status, void* user);
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Start a comms layer. Use this or sleep controllers, not both.
+ * @param comms A comms layer to start.
+ * @param start_done Status change callback.
+ * @param user Argument passed to the callback.
+ * @return COMMS_SUCCESS if the callback will be called in the future.
+ */
+comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user);
+
+/**
+ * Stop a comms layer. Use this or sleep controllers, not both.
+ * @param comms A comms layer to stop.
+ * @param start_done Status change callback.
+ * @param user Argument passed to the callback.
+ * @return COMMS_SUCCESS if the callback will be called in the future.
+ */
+comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user);
+
+/**
+ * Get current status of the comms layer.
+ * @return Current status.
+ */
+comms_status_t comms_status(comms_layer_t* comms);
 
 // -----------------------------------------------------------------------------
 
@@ -187,6 +211,68 @@ void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
 comms_msg_t* comms_deliver(comms_layer_t* comms, comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
+
+// -----------------------------------------------------------------------------
+// Sleep management controller
+// If a sleep controller is registered for a comms layer, it will entirely take
+// over start-stop management, the comms_start and comms_stop functions should
+// be ignored altogether and only comms_sleep_block and comms_sleep_allow
+// should be used.
+// -----------------------------------------------------------------------------
+typedef struct comms_sleep_controller comms_sleep_controller_t;
+
+/**
+ * Register a sleep controller.
+ * @param comms Layer to register controller to.
+ * @param ctrl An unused controller.
+ * @param start_done Callback function called when a sleep block starts the comms layer.
+ * @param user User parameter passed with the callback.
+ */
+comms_error_t comms_register_sleep_controller(comms_layer_t * comms, comms_sleep_controller_t * ctrl,
+                                              comms_status_change_f * start_done, void * user);
+
+/**
+ * De-register a sleep controller.
+ * @param comms Layer to remove the controller from.
+ * @param ctrl A registered ccontroller.
+ * @return COMMS_SUCCESS when controller was removed.
+ */
+comms_error_t comms_deregister_sleep_controller(comms_layer_t * comms, comms_sleep_controller_t * ctrl);
+
+// Block may be asynchronous, wakeup may take time, or EALREADY may be returned
+
+/**
+ * Request a sleep block and the layer to be started. May return COMMS_ALREADY if
+ * the block takes effect immediately or COMMS_SUCCESS if the layer needs to be
+ * started and therefore a state change callback will be called once ready.
+ *
+ * @param ctrl A registered ccontroller.
+ * @return COMMS_SUCCESS when callback will be called in the future, COMMS_ALREADY if block immediately successful.
+ */
+comms_error_t comms_sleep_block(comms_sleep_controller_t * ctrl);
+
+/**
+ * Release a sleep block. The block is released immediately but the layer shutdown
+ * will only happen if other blocks are not present ... it will also take time.
+ * No callback will be fired, it is ok to request another block immediately.
+ *
+ * @param ctrl A registered ccontroller.
+ * @return COMMS_SUCCESS when block was released, COMMS_ALREADY if it was not event active.
+ */
+comms_error_t comms_sleep_allow(comms_sleep_controller_t * ctrl);
+
+/**
+ * Query current block status. Use comms_status to get actual status.
+ *
+ * @param ctrl A registered ccontroller.
+ * @return true if block is active or pending.
+ */
+bool comms_sleep_blocked(comms_sleep_controller_t * ctrl);
+
+
+// -----------------------------------------------------------------------------
+// Include implementation details.
+// -----------------------------------------------------------------------------
 #include "mist_comm_private.h"
 
 #endif//MIST_COMM_H_

@@ -16,14 +16,46 @@ struct comms_msg {
 		uint8_t footer[COMMS_MSG_FOOTER_SIZE];
 		uint8_t metadata[COMMS_MSG_METADATA_SIZE];
 	} body;
-	comms_msg_t* next; // ... maybe, could be very useful for transitioning through layers
 };
 
+// Receiver structure ----------------------------------------------------------
 struct comms_receiver { // Members are private, should not be accessed
 	am_id_t           type;
 	comms_receive_f*  callback;
 	void*             user;
 	comms_receiver_t* next;
 };
+
+// Sleep controller structure --------------------------------------------------
+struct comms_sleep_controller {
+	comms_layer_t* comms;
+
+	bool block;
+	bool pending;
+
+	comms_status_change_f* cb;
+	void* user;
+
+	comms_sleep_controller_t* next;
+};
+
+// Internal locking ------------------------------------------------------------
+
+void _comms_mutex_init(comms_layer_t* comms);
+
+void _comms_mutex_acquire(comms_layer_t* comms);
+
+void _comms_mutex_release(comms_layer_t* comms);
+
+
+// Deferred calls --------------------------------------------------------------
+
+typedef void comms_deferred_f(void * argument);
+
+void _comms_deferred_init(comms_layer_t * comms, void ** deferred, comms_deferred_f * cb);
+
+void _comms_defer(void * deferred);
+
+void _comms_deferred_deinit(void * deferred);
 
 #endif//MIST_COMM_PRIVATE_H_

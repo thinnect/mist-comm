@@ -195,6 +195,10 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
 	//comms->deregister_recv = &am_comms_deregister_recv;
 	comms_initialize_rcvr_management(comms);
 
+	_comms_mutex_init(layer);
+
+	comms->sleep_controller_deferred = NULL;
+
 	comms->get_packet_type = &am_comms_get_packet_type;
 	comms->set_packet_type = &am_comms_set_packet_type;
 

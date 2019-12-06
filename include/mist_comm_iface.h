@@ -56,6 +56,9 @@ typedef void comms_set_lqi_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
 typedef int8_t comms_get_rssi_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_rssi_f(comms_layer_iface_t*, comms_msg_t*, int8_t);
 
+typedef void comms_mutex_acquire_f(comms_layer_iface_t*);
+typedef void comms_mutex_release_f(comms_layer_iface_t*);
+
 // -----------------------------------------------------------------------------
 
 struct comms_layer_iface {
@@ -110,14 +113,22 @@ struct comms_layer_iface {
 	comms_get_rssi_f* get_rssi;
 	comms_set_rssi_f* set_rssi;
 
+	comms_mutex_acquire_f* mutex_acquire;
+	comms_mutex_release_f* mutex_release;
+
 	// Receivers
 	comms_receiver_t* receivers; // List of registered receivers
 
 	// Snoopers
 	comms_receiver_t* snoopers; // List of registered snoopers
 
+	// Sleep controllers
+	comms_sleep_controller_t* sleep_controllers; // List of sleep controllers
+	void * sleep_controller_deferred;
+
 	// Standard variables
 	comms_status_t status;
+	void * mutex;
 };
 
 #endif//MIST_COMM_IFACE_H_

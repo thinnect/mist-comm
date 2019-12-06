@@ -280,3 +280,16 @@ void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi) {
 		cl->set_rssi(cl, msg, rssi);
 	}
 }
+
+void _comms_mutex_acquire(comms_layer_t* comms) {
+	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+	if(NULL != cl->mutex) {
+		cl->mutex_acquire(cl);
+	}
+}
+void _comms_mutex_release(comms_layer_t* comms) {
+	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+	if(NULL != cl->mutex) {
+		cl->mutex_release(cl);
+	}
+}

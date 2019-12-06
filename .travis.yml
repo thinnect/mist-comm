@@ -7,3 +7,4 @@ addons:
 
 script:
   - make -C test/startstop
+  - make -C test/sleep
