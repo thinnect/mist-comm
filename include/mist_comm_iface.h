@@ -5,6 +5,7 @@
 
 typedef struct comms_layer_iface comms_layer_iface_t;
 
+typedef comms_status_t comms_status_f(comms_layer_iface_t*);
 typedef comms_error_t comms_start_f(comms_layer_iface_t*, comms_status_change_f*, void*);
 typedef comms_error_t comms_stop_f(comms_layer_iface_t*, comms_status_change_f*, void*);
 
@@ -62,6 +63,8 @@ struct comms_layer_iface {
 
 	comms_start_f* start;
 	comms_stop_f* stop;
+	comms_status_change_f* status_change_user_cb;
+	void* status_change_user;
 
 	comms_init_message_f* init_message;
 
@@ -108,11 +111,13 @@ struct comms_layer_iface {
 	comms_set_rssi_f* set_rssi;
 
 	// Receivers
-	comms_receiver_t* receivers; // Linked list of registered receivers
+	comms_receiver_t* receivers; // List of registered receivers
 
 	// Snoopers
-	comms_receiver_t* snoopers; // Linked list of registered snoopers
+	comms_receiver_t* snoopers; // List of registered snoopers
 
+	// Standard variables
+	comms_status_t status;
 };
 
 #endif//MIST_COMM_IFACE_H_

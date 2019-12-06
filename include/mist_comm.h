@@ -53,6 +53,8 @@ comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_don
 
 comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user);
 
+comms_status_t comms_status(comms_layer_t* comms);
+
 typedef struct comms_msg comms_msg_t;
 
 // Callback definitions --------------------------------------------------------

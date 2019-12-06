@@ -3,10 +3,30 @@
 
 #include <stdbool.h>
 
+static void comms_status_change_callback(comms_layer_t* comms, comms_status_t status, void* user) {
+	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+	cl->status = status;
+	cl->status_change_user_cb(comms, status, cl->status_change_user);
+	cl->status_change_user_cb = NULL;
+	cl->status_change_user = NULL;
+}
+
 comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user) {
 	if(NULL != comms) {
-		if(NULL != ((comms_layer_iface_t*)comms)->start) {
-			return ((comms_layer_iface_t*)comms)->start((comms_layer_iface_t*)comms, start_done, user);
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		if(NULL != cl->start) {
+			if(NULL != cl->status_change_user_cb) {
+				return COMMS_EBUSY;
+			}
+			else {
+				comms_error_t err = cl->start(cl, &comms_status_change_callback, NULL);
+				if(COMMS_SUCCESS == err) {
+					cl->status = COMMS_STARTING;
+					cl->status_change_user_cb = start_done;
+					cl->status_change_user = user;
+				}
+				return err;
+			}
 		}
 	}
 	return COMMS_EINVAL;
@@ -14,11 +34,28 @@ comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_don
 
 comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user) {
 	if(NULL != comms) {
-		if(NULL != ((comms_layer_iface_t*)comms)->stop) {
-			return ((comms_layer_iface_t*)comms)->stop((comms_layer_iface_t*)comms, stop_done, user);
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		if(NULL != cl->stop) {
+			if(NULL != cl->status_change_user_cb) {
+				return COMMS_EBUSY;
+			}
+			else {
+				comms_error_t err = cl->stop(cl, &comms_status_change_callback, NULL);
+				if(COMMS_SUCCESS == err) {
+					cl->status = COMMS_STOPPING;
+					cl->status_change_user_cb = stop_done;
+					cl->status_change_user = user;
+				}
+				return err;
+			}
 		}
 	}
 	return COMMS_EINVAL;
+}
+
+comms_status_t comms_status(comms_layer_t* comms) {
+	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+	return cl->status;
 }
 
 void comms_init_message(comms_layer_t* comms, comms_msg_t* msg) {
