@@ -8,6 +8,8 @@
 
 #include "mist_comm_private.h"
 
+#include "cmsis_os2.h"
+
 /**
  * Initialize a deferred. In this case deferreds are implemented through an
  * os timer.
