@@ -51,7 +51,7 @@ comms_error_t comms_bridge_init (comms_bridge_t * bridge,
 static void bridge_send_done (comms_layer_t * comms, const comms_msg_t * msg, comms_error_t result, void * user)
 {
 	comms_bridge_thread_t * bt = (comms_bridge_thread_t*)user;
-	logger(result == COMMS_SUCCESS ? LOG_DEBUG1: LOG_WARN1, "%p snt %d", msg, result);
+	logger(result == COMMS_SUCCESS ? LOG_DEBUG3: LOG_WARN1, "%p snt %d", msg, result);
 	osThreadFlagsSet(bt->thread, 0x00000001U);
 }
 
@@ -59,10 +59,10 @@ static void bridge_am_snoop (comms_layer_t* comms, const comms_msg_t* msg, void*
 {
 	comms_bridge_thread_t * bt = (comms_bridge_thread_t*)user;
 
-	#if (__LOG_LEVEL__ & LOG_DEBUG4)
+	#if (__LOG_LEVEL__ & LOG_DEBUG2)
 	uint8_t plen = comms_get_payload_length(comms, msg);
 	uint8_t* payload = comms_get_payload(comms, msg, plen);
-	debugb4("rcv %d", payload, plen, (unsigned int)plen);
+	debugb2("rcv %d", payload, plen, (unsigned int)plen);
 	#endif//debug
 
 	if(osMessageQueuePut(bt->rxqueue, msg, 0, 0) != osOK)
@@ -79,12 +79,12 @@ static void bridge_thread (void * param)
 	{
 		if (osOK == osMessageQueueGet(bt->txqueue, &(bt->msg), NULL, osWaitForever))
 		{
-			#if (__LOG_LEVEL__ & LOG_DEBUG4)
+			#if (__LOG_LEVEL__ & LOG_DEBUG1)
 			uint8_t plen = comms_get_payload_length(bt->layer, &(bt->msg));
 			uint8_t* payload = comms_get_payload(bt->layer, &(bt->msg), plen);
 			//debugb1("snd %d", payload, plen, (unsigned int)plen);
 
-			debugb4("tx {%02X}%04"PRIX16"->%04"PRIX16"[%02X]",
+			debugb1("{%02X}%04"PRIX16"->%04"PRIX16"[%02X]",
 				payload, plen,
 				DEFAULT_PAN_ID,
 				comms_am_get_source(bt->layer, &(bt->msg)),
@@ -95,7 +95,7 @@ static void bridge_thread (void * param)
 			if(COMMS_SUCCESS == comms_send(bt->layer, &(bt->msg), bridge_send_done, bt))
 			{
 				osThreadFlagsWait(0x00000001U, osFlagsWaitAny, osWaitForever);
-				debug1("snt");
+				debug4("snt");
 			}
 			else
 			{
