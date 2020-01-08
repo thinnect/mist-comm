@@ -12,7 +12,7 @@ static void comms_status_change_callback(comms_layer_t* comms, comms_status_t st
 }
 
 comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user) {
-	if(NULL != comms) {
+	if((NULL != comms)&&(NULL != start_done)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		if(NULL != cl->start) {
 			if(NULL != cl->status_change_user_cb) {
@@ -33,7 +33,7 @@ comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_don
 }
 
 comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user) {
-	if(NULL != comms) {
+	if((NULL != comms)&&(NULL != stop_done)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		if(NULL != cl->stop) {
 			if(NULL != cl->status_change_user_cb) {
