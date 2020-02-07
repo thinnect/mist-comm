@@ -5,25 +5,43 @@
 
 static void comms_status_change_callback(comms_layer_t* comms, comms_status_t status, void* user) {
 	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
-	cl->status = status;
+
 	cl->status_change_user_cb(comms, status, cl->status_change_user);
+
+	_comms_mutex_acquire(comms);
+	cl->status = status;
 	cl->status_change_user_cb = NULL;
 	cl->status_change_user = NULL;
+	_comms_mutex_release(comms);
 }
 
 comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user) {
 	if((NULL != comms)&&(NULL != start_done)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		if(NULL != cl->start) {
+			_comms_mutex_acquire(comms);
 			if(NULL != cl->status_change_user_cb) {
+				_comms_mutex_release(comms);
 				return COMMS_EBUSY;
 			}
+			else if(COMMS_STARTED == cl->status) {
+				_comms_mutex_release(comms);
+				return COMMS_ALREADY;
+			}
 			else {
+				comms_status_t status = cl->status;
+				cl->status = COMMS_STARTING;
+				cl->status_change_user_cb = start_done;
+				cl->status_change_user = user;
+				_comms_mutex_release(comms);
+
 				comms_error_t err = cl->start(cl, &comms_status_change_callback, NULL);
-				if(COMMS_SUCCESS == err) {
-					cl->status = COMMS_STARTING;
-					cl->status_change_user_cb = start_done;
-					cl->status_change_user = user;
+				if(COMMS_SUCCESS != err) {
+					_comms_mutex_acquire(comms);
+					cl->status = status;
+					cl->status_change_user_cb = NULL;
+					cl->status_change_user = NULL;
+					_comms_mutex_release(comms);
 				}
 				return err;
 			}
@@ -36,15 +54,29 @@ comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done,
 	if((NULL != comms)&&(NULL != stop_done)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		if(NULL != cl->stop) {
+			_comms_mutex_acquire(comms);
 			if(NULL != cl->status_change_user_cb) {
+				_comms_mutex_release(comms);
 				return COMMS_EBUSY;
 			}
+			else if(COMMS_STOPPED == cl->status) {
+				_comms_mutex_release(comms);
+				return COMMS_ALREADY;
+			}
 			else {
+				comms_status_t status = cl->status;
+				cl->status = COMMS_STOPPING;
+				cl->status_change_user_cb = stop_done;
+				cl->status_change_user = user;
+				_comms_mutex_release(comms);
+
 				comms_error_t err = cl->stop(cl, &comms_status_change_callback, NULL);
-				if(COMMS_SUCCESS == err) {
-					cl->status = COMMS_STOPPING;
-					cl->status_change_user_cb = stop_done;
-					cl->status_change_user = user;
+				if(COMMS_SUCCESS != err) {
+					_comms_mutex_acquire(comms);
+					cl->status = status;
+					cl->status_change_user_cb = NULL;
+					cl->status_change_user = NULL;
+					_comms_mutex_release(comms);
 				}
 				return err;
 			}
@@ -55,7 +87,11 @@ comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done,
 
 comms_status_t comms_status(comms_layer_t* comms) {
 	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
-	return cl->status;
+	comms_status_t status;
+	_comms_mutex_acquire(comms);
+	status = cl->status;
+	_comms_mutex_release(comms);
+	return status;
 }
 
 void comms_init_message(comms_layer_t* comms, comms_msg_t* msg) {

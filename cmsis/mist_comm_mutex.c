@@ -10,9 +10,11 @@
 #include "mist_comm_private.h"
 #include "cmsis_os2.h"
 
+static const osMutexAttr_t attr = {"comms", osMutexRecursive|osMutexPrioInherit, NULL, 0U};
+
 static void mutex_acquire(comms_layer_iface_t * cl)
 {
-	osMutexAcquire((osMutexId_t)(cl->mutex), osWaitForever);
+	while(osOK != osMutexAcquire((osMutexId_t)(cl->mutex), osWaitForever));
 }
 
 static void mutex_release(comms_layer_iface_t * cl)
@@ -20,12 +22,11 @@ static void mutex_release(comms_layer_iface_t * cl)
 	osMutexRelease((osMutexId_t)(cl->mutex));
 }
 
-
 void _comms_mutex_init(comms_layer_t * comms)
 {
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
-	cl->mutex = (void*)osMutexNew(NULL);
+
+	cl->mutex = (void*)osMutexNew(&attr);
 	cl->mutex_acquire = mutex_acquire;
 	cl->mutex_release = mutex_release;
 }
-
