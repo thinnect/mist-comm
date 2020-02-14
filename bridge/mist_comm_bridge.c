@@ -20,7 +20,7 @@
 #include "log.h"
 
 static void bridge_thread(void * param);
-static void bridge_send_done(comms_layer_t * comms, const comms_msg_t * msg, comms_error_t result, void * user);
+static void bridge_send_done(comms_layer_t * comms, comms_msg_t * msg, comms_error_t result, void * user);
 static void bridge_am_snoop(comms_layer_t* comms, const comms_msg_t* msg, void* user);
 
 comms_error_t comms_bridge_init (comms_bridge_t * bridge,
@@ -48,7 +48,7 @@ comms_error_t comms_bridge_init (comms_bridge_t * bridge,
 	return COMMS_SUCCESS;
 }
 
-static void bridge_send_done (comms_layer_t * comms, const comms_msg_t * msg, comms_error_t result, void * user)
+static void bridge_send_done (comms_layer_t * comms, comms_msg_t * msg, comms_error_t result, void * user)
 {
 	comms_bridge_thread_t * bt = (comms_bridge_thread_t*)user;
 	logger(result == COMMS_SUCCESS ? LOG_DEBUG3: LOG_WARN1, "%p snt %d", msg, result);
