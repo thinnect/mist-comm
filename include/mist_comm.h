@@ -7,6 +7,7 @@
 #include <stdbool.h>
 
 #include "mist_comm_basics.h"
+#include "mist_comm_mutex.h"
 
 #include "platform_msg.h"
 
@@ -269,6 +270,27 @@ comms_error_t comms_sleep_allow(comms_sleep_controller_t * ctrl);
  */
 bool comms_sleep_blocked(comms_sleep_controller_t * ctrl);
 
+// -----------------------------------------------------------------------------
+// Locking, for internal use mostly --------------------------------------------
+// -----------------------------------------------------------------------------
+
+/**
+ * Create a mutex.
+ * @return NULL for failure.
+ */
+commsMutexId_t comms_mutex_create();
+
+/**
+ * Acquire the specified mutex. Blocks until aquired.
+ * @param mutex - The mutex to acquire.
+ */
+void comms_mutex_acquire(commsMutexId_t mutex);
+
+/**
+ * Release the specified mutex. Returns "immediately".
+ * @param mutex - The mutex to release.
+ */
+void comms_mutex_release(commsMutexId_t mutex);
 
 // -----------------------------------------------------------------------------
 // Include implementation details.

@@ -27,8 +27,8 @@ comms_error_t comms_bridge_init (comms_bridge_t * bridge,
                                  comms_layer_t * a,
                                  comms_layer_t * b)
 {
-	bridge->t1.rxqueue = osMessageQueueNew(10, sizeof(comms_msg_t), NULL);
-	bridge->t1.txqueue = osMessageQueueNew(10, sizeof(comms_msg_t), NULL);
+	bridge->t1.rxqueue = osMessageQueueNew(1, sizeof(comms_msg_t), NULL);
+	bridge->t1.txqueue = osMessageQueueNew(1, sizeof(comms_msg_t), NULL);
 	bridge->t2.rxqueue = bridge->t1.txqueue;
 	bridge->t2.txqueue = bridge->t1.rxqueue;
 
@@ -65,8 +65,10 @@ static void bridge_am_snoop (comms_layer_t* comms, const comms_msg_t* msg, void*
 	debugb2("rcv %d", payload, plen, (unsigned int)plen);
 	#endif//debug
 
+	printk("qput\n");
 	if(osMessageQueuePut(bt->rxqueue, msg, 0, 0) != osOK)
 	{
+		printk("qdrop\n");
 		warn1("drop");
 	}
 }
@@ -94,11 +96,13 @@ static void bridge_thread (void * param)
 
 			if(COMMS_SUCCESS == comms_send(bt->layer, &(bt->msg), bridge_send_done, bt))
 			{
+				printk("gsnd\n");
 				osThreadFlagsWait(0x00000001U, osFlagsWaitAny, osWaitForever);
 				debug4("snt");
 			}
 			else
 			{
+				printk("bsnd\n");
 				warn1("snd");
 			}
 		}

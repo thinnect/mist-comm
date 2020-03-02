@@ -32,15 +32,6 @@ static comms_error_t am_comms_send(comms_layer_iface_t* comms, comms_msg_t* msg,
 	return COMMS_FAIL;
 }
 
-//static comms_error_t am_comms_register_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user, am_id_t amid) {
-//	// there is a suitable implementation in mist_comm_rcv.c
-//	return COMMS_FAIL;
-//}
-//static comms_error_t am_comms_deregister_recv(comms_layer_iface_t* comms, comms_receiver_t* rcvr) {
-//	// there is a suitable implementation in mist_comm_rcv.c
-//	return COMMS_FAIL;
-//}
-
 static am_id_t am_comms_get_packet_type(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return msg->body.type;
 }
@@ -191,11 +182,12 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
 	else {
 		comms->send = &am_comms_send;
 	}
-	//comms->register_recv = &am_comms_register_recv;
-	//comms->deregister_recv = &am_comms_deregister_recv;
-	comms_initialize_rcvr_management(comms);
 
-	_comms_mutex_init(layer);
+	comms->start_stop_mutex = comms_mutex_create();
+	comms->controller_mutex = comms_mutex_create();
+	comms->receiver_mutex = comms_mutex_create();
+
+	comms_initialize_rcvr_management(comms);
 
 	comms->sleep_controller_deferred = NULL;
 
