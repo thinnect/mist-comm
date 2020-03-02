@@ -20,9 +20,9 @@ static bool unsafe_service_callbacks(comms_layer_t * comms, comms_status_t statu
 static void status_change_callback(comms_layer_t * comms, comms_status_t status, void * user)
 {
 	bool ok;
-	_comms_mutex_acquire(comms);
+	comms_mutex_acquire(comms->controller_mutex);
 	ok = unsafe_service_callbacks(comms, status);
-	_comms_mutex_release(comms);
+	comms_mutex_release(comms->controller_mutex);
 	if (!ok)
 	{
 		comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
@@ -34,9 +34,9 @@ static void deferred_callback(void * arg)
 {
 	bool ok;
 	comms_layer_t * comms = (comms_layer_t*)arg;
-	_comms_mutex_acquire(comms);
+	comms_mutex_acquire(comms->controller_mutex);
 	ok = unsafe_update_state(comms);
-	_comms_mutex_release(comms);
+	comms_mutex_release(comms->controller_mutex);
 	if (!ok)
 	{
 		comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
@@ -121,7 +121,7 @@ comms_error_t comms_register_sleep_controller(comms_layer_t * comms, comms_sleep
 	comms_error_t err = COMMS_SUCCESS;
 	comms_sleep_controller_t** indirect;
 
-	_comms_mutex_acquire(comms);
+	comms_mutex_acquire(comms->controller_mutex);
 
 	if (NULL == cl->sleep_controller_deferred)
 	{
@@ -149,7 +149,7 @@ comms_error_t comms_register_sleep_controller(comms_layer_t * comms, comms_sleep
 		ctrl->next = NULL;
 	}
 
-	_comms_mutex_release(comms);
+	comms_mutex_release(comms->controller_mutex);
 
 	return err;
 }
@@ -160,7 +160,7 @@ comms_error_t comms_deregister_sleep_controller(comms_layer_t * comms, comms_sle
 	comms_error_t err = COMMS_FAIL;
 	comms_sleep_controller_t** indirect;
 
-	_comms_mutex_acquire(comms);
+	comms_mutex_acquire(comms->controller_mutex);
 
 	for(indirect=&(cl->sleep_controllers); NULL != *indirect; indirect = &((*indirect)->next))
 	{
@@ -179,7 +179,7 @@ comms_error_t comms_deregister_sleep_controller(comms_layer_t * comms, comms_sle
 		}
 	}
 
-	_comms_mutex_release(comms);
+	comms_mutex_release(comms->controller_mutex);
 
 	return err;
 }
