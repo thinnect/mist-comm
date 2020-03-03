@@ -6,11 +6,10 @@ CFLAGS += -Wall
 SRC_FILES  = $(UNITY_ROOT)/src/unity.c test_startstop.c
 SRC_FILES += test_runners/TestProductionCode_Runner.c
 SRC_FILES += ../../api/mist_comm_api.c
-
-CFLAGS += -I. -I../../api -I../../include -I../include/compat
+SRC_FILES += ../../mock/mist_comm_mutex.c
 
 INC_DIRS  = -I. -I$(UNITY_ROOT)/src
-
+INC_DIRS += -I../../mock
 INC_DIRS += -I..
 INC_DIRS += -I../../include
 INC_DIRS += -I../../include/compat
