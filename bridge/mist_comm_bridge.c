@@ -17,7 +17,7 @@
 #include "loglevels.h"
 #define __MODUUL__ "bridge"
 #define __LOG_LEVEL__ (LOG_LEVEL_bridge & BASE_LOG_LEVEL)
-#include "log.h"
+#include "lll_log.h"
 
 static void bridge_thread(void * param);
 static void bridge_send_done(comms_layer_t * comms, comms_msg_t * msg, comms_error_t result, void * user);
