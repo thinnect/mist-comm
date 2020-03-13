@@ -7,12 +7,12 @@ SRC_FILES  = $(UNITY_ROOT)/src/unity.c test_sleep.c
 SRC_FILES += test_runners/TestProductionCode_Runner.c
 SRC_FILES += ../../api/mist_comm_api.c
 SRC_FILES += ../../control/mist_comm_controller.c
+SRC_FILES += ../../mock/mist_comm_mutex.c
 
-CFLAGS += -I. -I../../api -I../../include -I../include/compat
 
 INC_DIRS  = -I. -I$(UNITY_ROOT)/src
-
 INC_DIRS += -I..
+INC_DIRS += -I../../mock
 INC_DIRS += -I../../include
 INC_DIRS += -I../../include/compat
 

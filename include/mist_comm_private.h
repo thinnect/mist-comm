@@ -39,15 +39,6 @@ struct comms_sleep_controller {
 	comms_sleep_controller_t* next;
 };
 
-// Internal locking ------------------------------------------------------------
-
-void _comms_mutex_init(comms_layer_t* comms);
-
-void _comms_mutex_acquire(comms_layer_t* comms);
-
-void _comms_mutex_release(comms_layer_t* comms);
-
-
 // Deferred calls --------------------------------------------------------------
 
 typedef void comms_deferred_f(void * argument);

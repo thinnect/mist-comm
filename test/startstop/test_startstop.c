@@ -66,6 +66,11 @@ void test_StartAndStop()
 	base.start = &comms_dummy_start;
 	base.stop = &comms_dummy_stop;
 
+	base.status_change_user_cb = NULL;
+	base.controller_mutex = comms_mutex_create();
+	base.start_stop_mutex = comms_mutex_create();
+	base.receiver_mutex = comms_mutex_create();
+
 	// Test starting
 	TEST_ASSERT_EQUAL_INT(COMMS_SUCCESS, comms_start((comms_layer_t*)&base, &comms_start_done, NULL));
 

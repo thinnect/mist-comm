@@ -19,27 +19,27 @@ static bool unsafe_service_callbacks(comms_layer_t * comms, comms_status_t statu
 
 static void status_change_callback(comms_layer_t * comms, comms_status_t status, void * user)
 {
+	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 	bool ok;
-	_comms_mutex_acquire(comms);
+	comms_mutex_acquire(cl->controller_mutex);
 	ok = unsafe_service_callbacks(comms, status);
-	_comms_mutex_release(comms);
+	comms_mutex_release(cl->controller_mutex);
 	if (!ok)
 	{
-		comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 		_comms_defer(cl->sleep_controller_deferred);
 	}
 }
 
 static void deferred_callback(void * arg)
 {
-	bool ok;
 	comms_layer_t * comms = (comms_layer_t*)arg;
-	_comms_mutex_acquire(comms);
+	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
+	bool ok;
+	comms_mutex_acquire(cl->controller_mutex);
 	ok = unsafe_update_state(comms);
-	_comms_mutex_release(comms);
+	comms_mutex_release(cl->controller_mutex);
 	if (!ok)
 	{
-		comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 		_comms_defer(cl->sleep_controller_deferred);
 	}
 }
@@ -121,7 +121,7 @@ comms_error_t comms_register_sleep_controller(comms_layer_t * comms, comms_sleep
 	comms_error_t err = COMMS_SUCCESS;
 	comms_sleep_controller_t** indirect;
 
-	_comms_mutex_acquire(comms);
+	comms_mutex_acquire(cl->controller_mutex);
 
 	if (NULL == cl->sleep_controller_deferred)
 	{
@@ -149,7 +149,7 @@ comms_error_t comms_register_sleep_controller(comms_layer_t * comms, comms_sleep
 		ctrl->next = NULL;
 	}
 
-	_comms_mutex_release(comms);
+	comms_mutex_release(cl->controller_mutex);
 
 	return err;
 }
@@ -160,7 +160,7 @@ comms_error_t comms_deregister_sleep_controller(comms_layer_t * comms, comms_sle
 	comms_error_t err = COMMS_FAIL;
 	comms_sleep_controller_t** indirect;
 
-	_comms_mutex_acquire(comms);
+	comms_mutex_acquire(cl->controller_mutex);
 
 	for(indirect=&(cl->sleep_controllers); NULL != *indirect; indirect = &((*indirect)->next))
 	{
@@ -179,7 +179,7 @@ comms_error_t comms_deregister_sleep_controller(comms_layer_t * comms, comms_sle
 		}
 	}
 
-	_comms_mutex_release(comms);
+	comms_mutex_release(cl->controller_mutex);
 
 	return err;
 }
@@ -190,7 +190,8 @@ comms_error_t comms_sleep_block(comms_sleep_controller_t * ctrl)
 	comms_error_t err = COMMS_EINVAL;
 	if ((NULL != ctrl)&&(NULL != ctrl->comms))
 	{
-		_comms_mutex_acquire(ctrl->comms);
+		comms_layer_iface_t * cl = (comms_layer_iface_t*)(ctrl->comms);
+		comms_mutex_acquire(cl->controller_mutex);
 
 		if(ctrl->pending)
 		{
@@ -219,7 +220,7 @@ comms_error_t comms_sleep_block(comms_sleep_controller_t * ctrl)
 			}
 		}
 
-		_comms_mutex_release(ctrl->comms);
+		comms_mutex_release(cl->controller_mutex);
 	}
 	return err;
 }
@@ -230,7 +231,8 @@ comms_error_t comms_sleep_allow(comms_sleep_controller_t * ctrl)
 	comms_error_t err = COMMS_EINVAL;
 	if ((NULL != ctrl)&&(NULL != ctrl->comms))
 	{
-		_comms_mutex_acquire(ctrl->comms);
+		comms_layer_iface_t * cl = (comms_layer_iface_t*)(ctrl->comms);
+		comms_mutex_acquire(cl->controller_mutex);
 
 		if(false == ctrl->block)
 		{
@@ -250,16 +252,17 @@ comms_error_t comms_sleep_allow(comms_sleep_controller_t * ctrl)
 			}
 		}
 
-		_comms_mutex_release(ctrl->comms);
+		comms_mutex_release(cl->controller_mutex);
 	}
 	return err;
 }
 
 bool comms_sleep_blocked(comms_sleep_controller_t * ctrl)
 {
+	comms_layer_iface_t * cl = (comms_layer_iface_t*)(ctrl->comms);
 	bool blocked;
-	_comms_mutex_acquire(ctrl->comms);
+	comms_mutex_acquire(cl->controller_mutex);
 	blocked = ctrl->block;
-	_comms_mutex_release(ctrl->comms);
+	comms_mutex_release(cl->controller_mutex);
 	return blocked;
 }

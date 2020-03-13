@@ -10,6 +10,7 @@
 
 #include "mist_comm.h"
 #include "mist_comm_iface.h"
+#include "mist_comm_mutex.h"
 
 static int m_start_requested = 0;
 static int m_stop_requested = 0;
@@ -97,7 +98,10 @@ void test_SleepControllers()
 	base.status = COMMS_STOPPED;
 	base.sleep_controllers = NULL;
 	base.sleep_controller_deferred = NULL;
-	base.mutex = NULL;
+	base.status_change_user_cb = NULL;
+	base.controller_mutex = comms_mutex_create();
+	base.start_stop_mutex = comms_mutex_create();
+	base.receiver_mutex = comms_mutex_create();
 
 	TEST_ASSERT_EQUAL_INT(COMMS_STOPPED, comms_status((comms_layer_t*)&base));
 
