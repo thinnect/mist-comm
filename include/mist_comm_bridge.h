@@ -43,4 +43,13 @@ comms_error_t comms_bridge_init (comms_bridge_t * bridge,
                                  comms_layer_t * a,
                                  comms_layer_t * b);
 
+/**
+ * Deinitialize a bridge, freeing all resources.
+ *
+ * MAY TAKE SOME TIME (10-15 seconds)!
+ *
+ * @param bridge The bridge to initialize.
+ */
+void comms_bridge_deinit (comms_bridge_t * bridge);
+
 #endif//MIST_COMM_BRIDGE_H_
