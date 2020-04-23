@@ -1,6 +1,7 @@
 /**
 * MistComm SerialActiveMessage layer implementation.
 *
+* Copyright Thinnect Inc. 2020
 * @author Raido Pahtma
 * @license MIT
 */

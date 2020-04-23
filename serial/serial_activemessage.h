@@ -4,6 +4,7 @@
 * Many instances can be created, each needs a serial_protocol.
 * Instances will set up a dispatcher with dispatch ID 0x00.
 *
+* Copyright Thinnect Inc. 2020
 * @author Raido Pahtma
 * @license MIT
 */

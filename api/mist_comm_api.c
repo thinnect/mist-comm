@@ -2,6 +2,7 @@
 #include "mist_comm_iface.h"
 
 #include <stdbool.h>
+#include <string.h>
 
 static void comms_status_change_callback(comms_layer_t* comms, comms_status_t status, void* user) {
 	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
@@ -99,16 +100,46 @@ void comms_init_message(comms_layer_t* comms, comms_msg_t* msg) {
 	}
 }
 
+void comms_get_destination(comms_layer_t* comms, const comms_msg_t* msg, comms_address_t* destination) {
+	memcpy(destination, &(msg->body.destination), sizeof(comms_address_t));
+}
+
+void comms_set_destination(comms_layer_t* comms, comms_msg_t* msg, const comms_address_t* destination) {
+	memcpy(&(msg->body.destination), destination, sizeof(comms_address_t));
+}
+
+void comms_get_source(comms_layer_t* comms, const comms_msg_t* msg, comms_address_t* source) {
+	memcpy(source, &(msg->body.source), sizeof(comms_address_t));
+}
+
+void comms_set_source(comms_layer_t* comms, comms_msg_t* msg, const comms_address_t* source) {
+	memcpy(&(msg->body.source), source, sizeof(comms_address_t));
+}
+
 comms_error_t comms_send(comms_layer_t* comms, comms_msg_t* msg, comms_send_done_f* sdf, void* user) {
 	if(comms != NULL) {
-		return ((comms_layer_iface_t*)comms)->send((comms_layer_iface_t*)comms, msg, sdf, user);
+		return ((comms_layer_iface_t*)comms)->sendf((comms_layer_iface_t*)comms, msg, sdf, user);
 	}
 	return COMMS_EINVAL;
 }
 
+bool comms_deliver(comms_layer_t* comms, comms_msg_t* msg) {
+	comms_layer_iface_t* iface = (comms_layer_iface_t*)comms;
+	if((iface != NULL)&&(iface->deliverf != NULL)) {
+		return iface->deliverf(iface, msg);
+	}
+	return false;
+}
+
 comms_error_t comms_register_recv(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void* user, am_id_t amid) {
 	if((comms != NULL)&&(rcvr != NULL)&&(func != NULL)) {
-		return ((comms_layer_iface_t*)comms)->register_recv((comms_layer_iface_t*)comms, rcvr, func, user, amid);
+		return ((comms_layer_iface_t*)comms)->register_recv((comms_layer_iface_t*)comms, rcvr, func, user, amid, false);
+	}
+	return COMMS_EINVAL;
+}
+comms_error_t comms_register_recv_eui(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void* user, am_id_t amid) {
+	if((comms != NULL)&&(rcvr != NULL)&&(func != NULL)) {
+		return ((comms_layer_iface_t*)comms)->register_recv((comms_layer_iface_t*)comms, rcvr, func, user, amid, true);
 	}
 	return COMMS_EINVAL;
 }

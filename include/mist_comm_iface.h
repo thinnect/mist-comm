@@ -12,8 +12,9 @@ typedef comms_error_t comms_stop_f(comms_layer_iface_t*, comms_status_change_f*,
 typedef void comms_init_message_f(comms_layer_iface_t*, comms_msg_t*);
 
 typedef comms_error_t comms_send_f(comms_layer_iface_t*, comms_msg_t*, comms_send_done_f*, void*);
+typedef bool comms_deliver_f(comms_layer_iface_t*, comms_msg_t*);
 
-typedef comms_error_t comms_register_recv_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*, am_id_t);
+typedef comms_error_t comms_register_recv_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*, am_id_t, bool);
 typedef comms_error_t comms_deregister_recv_f(comms_layer_iface_t*, comms_receiver_t*);
 
 typedef comms_error_t comms_register_snooper_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*);
@@ -68,7 +69,10 @@ struct comms_layer_iface {
 
 	comms_init_message_f* init_message;
 
-	comms_send_f* send;
+	comms_send_f* sendf;
+
+	comms_deliver_f* deliverf;
+
 	comms_register_recv_f* register_recv;
 	comms_deregister_recv_f* deregister_recv;
 	comms_register_snooper_f* register_snooper;

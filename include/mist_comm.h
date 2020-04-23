@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "eui64.h"
+
 #include "mist_comm_basics.h"
 #include "mist_comm_mutex.h"
 
@@ -44,28 +46,65 @@ typedef enum CommsStatus {
 } comms_status_t;
 
 typedef struct comms_layer {
-	uint8_t type; // TODO type definitions
+	uint8_t type; // TODO type definitions for reflection
+	ieee_eui64_t eui;
 	// Everything else will embed at least this structure
 } comms_layer_t;
 
+/**
+ * The comms local address structure. This carries a link-local address which
+ * may take different forms.
+ */
+typedef struct comms_local_addr {
+	uint8_t data[COMMS_MSG_ADDRESSING_SIZE];
+} comms_local_addr_t;
+
+/**
+ * The comms address structure.
+ */
+typedef struct comms_address {
+	ieee_eui64_t eui;
+	comms_local_addr_t local;
+	uint32_t updated; // Timestamp, seconds
+} comms_address_t;
+
 /*
- * The comms message structure. Should only be manipulated through comms APIs.
+ * The comms message structure. Should only be manipulated through the APIs.
  */
 typedef struct comms_msg comms_msg_t;
 
 // Callback definitions --------------------------------------------------------
 
-// Signalled when message transmission is completed to return the message object
-// to the client. A function of this type must be passed with every call to the
-// comms_send function and the passed function will be called in the future if
-// the comms_send returns a successful result (message is accepted).
+/**
+ * Signalled when message transmission is completed to return the message object
+ * to the client. A function of this type must be passed with every call to the
+ * comms_send function and the passed function will be called in the future if
+ * the comms_send returns COMMS_SUCCESS (message is accepted).
+ *
+ * @param comms The layer that was used to send the message.
+ * @param msg The message that was sent.
+ * @param result The result of the transmission.
+ * @param user The user pointer provided to comms_send.
+ */
 typedef void comms_send_done_f(comms_layer_t* comms, comms_msg_t* msg, comms_error_t result, void* user);
 
-// Signalled when a message is received. Functions of this type must first be
-// registered with a communications layer with comms_register_recv.
+/**
+ * Signalled when a message is received. Functions of this type must first be
+ * registered with a communications layer with comms_register_recv.
+ *
+ * @param comms The layer where the message was received.
+ * @param msg The message, only valid while this call is running.
+ * @param user The user pointer given to comms_register_recv.
+ */
 typedef void comms_receive_f(comms_layer_t* comms, const comms_msg_t* msg, void* user);
 
-// Signalled when a status change is requested and completed.
+/**
+ * Signalled when a status change is requested and completed.
+ *
+ * @param comms The layer for which the status change took place.
+ * @param status The new status (may not be what was actually requested).
+ * @param user The user pointer.
+ */
 typedef void comms_status_change_f(comms_layer_t* comms, comms_status_t status, void* user);
 
 // -----------------------------------------------------------------------------
@@ -110,16 +149,39 @@ comms_error_t comms_send(comms_layer_t* comms, comms_msg_t* msg, comms_send_done
 
 typedef struct comms_receiver comms_receiver_t;
 
-// Receiver must pass an unused comms_receiver_t object, guaranteeing that the
-// memory remains allocated and is not used elsewhere until deregister is called.
-// One receiver object may not be used in multiple roles at the same time, but
-// the same receive function can be registered several times with different
-// conditions and/or with a different user argument.
-comms_error_t comms_register_recv(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user, am_id_t amid);
-// ???
-// last param should be some form of generic args, but this is C ... are we ok
-// to proceed with AM ID or should we expand and rename? 16 bit port?
-// and what other filtering is needed for receives ... if any?
+/**
+ * Register to receive messages.
+ *
+ * Must pass an unused comms_receiver_t object, guaranteeing that the
+ * memory remains allocated and is not used elsewhere until deregister is called.
+ * One receiver object may not be used in multiple roles at the same time, but
+ * the same receive function can be registered several times with different
+ * conditions and/or with a different user argument.
+ */
+comms_error_t comms_register_recv(comms_layer_t* comms,
+                                  comms_receiver_t* rcvr,
+                                  comms_receive_f* func, void *user,
+                                  am_id_t amid);
+
+/**
+ * Register to receive messages, require the EUI64 addresses to be resolved.
+ *
+ * Must pass an unused comms_receiver_t object, guaranteeing that the
+ * memory remains allocated and is not used elsewhere until deregister is called.
+ * One receiver object may not be used in multiple roles at the same time, but
+ * the same receive function can be registered several times with different
+ * conditions and/or with a different user argument.
+ */
+comms_error_t comms_register_recv_eui(comms_layer_t* comms,
+                                      comms_receiver_t* rcvr,
+                                      comms_receive_f* func, void *user,
+                                      am_id_t amid);
+
+
+// ??? Open questions regarding receivers and their registration:
+// AMID param should be some form of generic args, but this is C ... are we ok
+// to only have the 8-bit AM ID or should we expand and rename? 16 bit port?
+// Are any other filtering options needed for receiveres?
 // ???
 
 // Remove an already registered receiver.
@@ -138,6 +200,14 @@ am_id_t comms_get_packet_type(comms_layer_t* comms, const comms_msg_t* msg);
 void comms_set_packet_type(comms_layer_t* comms, comms_msg_t* msg, am_id_t ptype);
 // -----------------------------------------------------------------------------
 
+// Addressing ------------------------------------------------------------------
+void comms_get_destination(comms_layer_t* comms, const comms_msg_t* msg, comms_address_t* destination);
+void comms_set_destination(comms_layer_t* comms, comms_msg_t* msg, const comms_address_t* destination);
+
+void comms_get_source(comms_layer_t* comms, const comms_msg_t* msg, comms_address_t* source);
+void comms_set_source(comms_layer_t* comms, comms_msg_t* msg, const comms_address_t* source);
+// -----------------------------------------------------------------------------
+
 // Message payload manipulation functions --------------------------------------
 uint8_t comms_get_payload_max_length(comms_layer_t* comms);
 
@@ -145,12 +215,12 @@ uint8_t comms_get_payload_length(comms_layer_t* comms, const comms_msg_t* msg);
 void comms_set_payload_length(comms_layer_t* comms, comms_msg_t* msg, uint8_t length);
 
 void* comms_get_payload(comms_layer_t* comms, const comms_msg_t* msg, uint8_t length);
-// ???
-// Do we want support for larger payloads - uint16_t length?
+// ??? Open questions regarding payload:
+// Do we want support larger payloads - uint16_t length?
 // ???
 // -----------------------------------------------------------------------------
 
-// PacketLink & Acknowledgements
+// PacketLink & Acknowledgements -----------------------------------------------
 uint8_t comms_get_retries(comms_layer_t* comms, const comms_msg_t* msg);
 comms_error_t comms_set_retries(comms_layer_t* comms, comms_msg_t* msg, uint8_t count);
 
@@ -169,7 +239,7 @@ bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg);
 void _comms_set_ack_received(comms_layer_t* comms, comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
-// Message timestamping
+// Message timestamping --------------------------------------------------------
 // Timestamps are microseconds local clock. Indicate either message reception or
 // transmission time.
 
@@ -183,7 +253,7 @@ bool comms_timestamp_valid(comms_layer_t* comms, const comms_msg_t* msg);
 comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp);
 // -----------------------------------------------------------------------------
 
-// TimeSync messaging
+// TimeSync messaging ----------------------------------------------------------
 // Event time is microseconds local clock
 
 // Set event time
@@ -196,7 +266,7 @@ uint32_t comms_get_event_time(comms_layer_t* comms, const comms_msg_t* msg);
 bool comms_event_time_valid(comms_layer_t* comms, const comms_msg_t* msg);
 // -----------------------------------------------------------------------------
 
-// Message Quality
+// Message Quality -------------------------------------------------------------
 uint8_t comms_get_lqi(comms_layer_t* comms, const comms_msg_t* msg);
 void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi);
 // ??? standardize on 0-100 instead of 0-255, because for example CC1101 LQI goes from 0-127 and is inverse to Atmel RFX.
@@ -206,12 +276,16 @@ int8_t comms_get_rssi(comms_layer_t* comms, const comms_msg_t* msg);
 void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
 // -----------------------------------------------------------------------------
 
-// Other functions -------------------------------------------------------------
-// Deliver a message to all registered receivers
-// TODO the return value does not make sense any more
-comms_msg_t* comms_deliver(comms_layer_t* comms, comms_msg_t* msg);
+// Received message delivery ---------------------------------------------------
+/**
+ * Deliver a message to all registered receivers.
+ *
+ * @param comms The later to use.
+ * @param msg The message to deliver.
+ * @return true if the message was delivered to at least one receiver
+*/
+bool comms_deliver(comms_layer_t* comms, comms_msg_t* msg);
 // -----------------------------------------------------------------------------
-
 
 // -----------------------------------------------------------------------------
 // Sleep management controller

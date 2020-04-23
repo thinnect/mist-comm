@@ -3,11 +3,14 @@
 
 #include "mist_comm.h"
 
+// Message structure -----------------------------------------------------------
 struct comms_msg {
 	struct {
 		am_id_t type; // AMID, port?
-		uint8_t source[COMMS_MSG_ADDRESSING_SIZE];
-		uint8_t destination[COMMS_MSG_ADDRESSING_SIZE];
+
+		comms_address_t source;
+		comms_address_t destination;
+
 		uint8_t header[COMMS_MSG_HEADER_SIZE];
 
 		uint8_t length;
@@ -23,6 +26,7 @@ struct comms_receiver { // Members are private, should not be accessed
 	am_id_t           type;
 	comms_receive_f*  callback;
 	void*             user;
+	bool              eui;
 	comms_receiver_t* next;
 };
 

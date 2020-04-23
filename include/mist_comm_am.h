@@ -3,6 +3,8 @@
 
 #include "mist_comm.h"
 #include "mist_comm_iface.h"
+#include "mist_comm_addrcache.h"
+#include "mist_comm_am_addrdisco.h"
 
 typedef struct comms_layer_am comms_layer_am_t;
 
@@ -24,7 +26,14 @@ struct comms_layer_am {
 	comms_am_set_source_f* am_set_source;
 
 	comms_am_addr_f* am_address;
+
+	comms_send_f* link_sendf;
+
 	am_addr_t am_addr;
+
+	comms_addr_cache_t * cache;
+
+	am_addrdisco_t * disco;
 };
 
 // ActiveMessage address
