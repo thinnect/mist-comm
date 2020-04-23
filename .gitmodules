@@ -3,4 +3,4 @@
 	url = https://github.com/ThrowTheSwitch/Unity.git
 [submodule "test/zoo/thinnect.node-platform"]
 	path = test/zoo/thinnect.node-platform
-	url = git@github.com:thinnect/node-platform.git
+	url = https://github.com/thinnect/node-platform.git
