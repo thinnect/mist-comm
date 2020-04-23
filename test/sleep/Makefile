@@ -16,6 +16,8 @@ INC_DIRS += -I../../mock
 INC_DIRS += -I../../include
 INC_DIRS += -I../../include/compat
 
+INC_DIRS += -I../zoo/thinnect.node-platform/include
+
 TARGET = test_sleep.out
 
 all: clean default

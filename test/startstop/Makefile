@@ -14,6 +14,8 @@ INC_DIRS += -I..
 INC_DIRS += -I../../include
 INC_DIRS += -I../../include/compat
 
+INC_DIRS += -I../zoo/thinnect.node-platform/include
+
 TARGET = test_startstop.out
 
 all: clean default
