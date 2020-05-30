@@ -46,7 +46,7 @@ static bool am_comms_deliver(comms_layer_iface_t* iface, comms_msg_t* msg) {
 
 	// Attach the eui address of the source
 	if(false == comms_cache_get_eui(amcomms->cache,
-                                      &(msg->body.source.local), &(msg->body.source.eui)))
+	                                &(msg->body.source.local), &(msg->body.source.eui)))
 	{
 		eui64_set_zeros(&(msg->body.destination.eui));
 	}
@@ -61,7 +61,7 @@ static bool am_comms_deliver(comms_layer_iface_t* iface, comms_msg_t* msg) {
 		memcpy(&(msg->body.destination.eui), &(comms->eui), sizeof(ieee_eui64_t));
 	}
 	else if(false == comms_cache_get_eui(amcomms->cache,
-                                            &(msg->body.destination.local), &(msg->body.destination.eui)))
+	                                     &(msg->body.destination.local), &(msg->body.destination.eui)))
 	{
 		eui64_set_zeros(&(msg->body.destination.eui));
 	}
@@ -199,6 +199,7 @@ static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, const comms_m
 	return *((am_addr_t*)msg->body.destination.local.data);
 }
 static void am_comms_set_destination(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t dest) {
+	memset(&(msg->body.destination.local), 0, sizeof(msg->body.destination.local));
 	*((am_addr_t*)msg->body.destination.local.data) = dest;
 	*((am_addr_t*)msg->body.destination.updated) = 0;
 	// *((am_addr_t*)msg->body.destination.updated) = now_s();
@@ -208,6 +209,7 @@ static am_addr_t am_comms_get_source(comms_layer_am_t* comms, const comms_msg_t*
 	return *((am_addr_t*)msg->body.source.local.data);
 }
 static void am_comms_set_source(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t source) {
+	memset(&(msg->body.source.local), 0, sizeof(msg->body.source.local));
 	*((am_addr_t*)msg->body.source.local.data) = source;
 	*((am_addr_t*)msg->body.source.updated) = 0;
 	// *((am_addr_t*)msg->body.source.updated) = now_s();

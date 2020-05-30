@@ -116,7 +116,7 @@ void comms_cache_update (comms_addr_cache_t * cache, const ieee_eui64_t * eui, c
 		uint32_t updated = UINT32_MAX;
 		for (int i=0;i<MIST_COMM_ADDRCACHE_SIZE;i++)
 		{
-			if (0 == eui64_is_zeros(&(cache->euis[i])))
+			if (eui64_is_zeros(&(cache->euis[i])))
 			{
 				free_slot = i;
 				break;
@@ -129,7 +129,7 @@ void comms_cache_update (comms_addr_cache_t * cache, const ieee_eui64_t * eui, c
 		}
 	}
 
-	debug("add");
+	debug("add %d", free_slot);
 	// Store the information in the slot that was found
 	memcpy(&(cache->euis[free_slot]), eui, sizeof(ieee_eui64_t));
 	memcpy(&(cache->locals[free_slot]), local, sizeof(comms_local_addr_t));
