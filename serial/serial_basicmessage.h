@@ -27,13 +27,15 @@ typedef struct serial_basicmessage serial_basicmessage_t;
  *              memory structure.
  * @param spr - Pointer to an initialized SerialProtocol layer.
  * @param dispatch - The SerialProtocol dispatch ID to use.
+ * @param amid - The AM ID to use for RX messages (for compatibility).
  *
  * @return a MistComm instance that can be used for sending/receiving messages
  *         or NULL for failure.
  */
 comms_layer_t* serial_basicmessage_init (serial_basicmessage_t * sbm,
                                          serial_protocol_t * spr,
-                                         uint8_t dispatch);
+                                         uint8_t dispatch,
+                                         am_id_t amid);
 
 /**
  * Deinitialize the SerialbasicMessage layer. The memory used by the instance
@@ -74,6 +76,8 @@ struct serial_basicmessage
 	sbm_queue_element_t * send_queue;
 	sbm_queue_element_t * free_queue;
 	sbm_queue_element_t queue_memory[SERIAL_BASICMESSAGE_QUEUE_LENGTH];
+
+	am_id_t amid;
 
 	bool send_busy;
 };

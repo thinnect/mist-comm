@@ -28,7 +28,8 @@ static bool serial_bm_receive(uint8_t dspch, const uint8_t data[], uint8_t lengt
 static void serial_bm_senddone(uint8_t dspch, const uint8_t data[], uint8_t length, bool acked, void* user);
 static void serial_bm_timer_cb(void * argument);
 
-comms_layer_t* serial_basicmessage_init (serial_basicmessage_t * sbm, serial_protocol_t * spr, uint8_t dispatch)
+comms_layer_t* serial_basicmessage_init (serial_basicmessage_t * sbm, serial_protocol_t * spr,
+                                         uint8_t dispatch, am_id_t amid)
 {
 	sbm->mutex = osMutexNew(NULL);
 	sbm->timer = osTimerNew(&serial_bm_timer_cb, osTimerOnce, sbm, NULL);
@@ -44,6 +45,7 @@ comms_layer_t* serial_basicmessage_init (serial_basicmessage_t * sbm, serial_pro
 		sbm->queue_memory[i].next = sbm->free_queue;
 		sbm->free_queue = &(sbm->queue_memory[i]);
 	}
+	sbm->amid = amid;
 
 	// Set up dispatcher
 	sbm->protocol = spr;
@@ -99,14 +101,15 @@ static bool serial_bm_receive(uint8_t dispatch, const uint8_t data[], uint8_t le
 		return false;
 	}
 
-	comms_set_packet_type(lyr, &msg, 0);
+	comms_set_packet_type(lyr, &msg, sbm->amid); // Set to specified amid as it needs to pass through deliver
 	comms_set_payload_length(lyr, &msg, length);
 	memcpy(payload, data, length);
 
 	// comms_set_timestamp(lyr, &msg, timestamp); // TODO Set to now? Make the lowest layer register frame starts ...?
 
-	comms_am_set_destination(lyr, &msg, 0);
-	comms_am_set_source(lyr, &msg, 0);
+	// Addresses are set to broadcast, as mist-comm may complain about 0 addresses
+	comms_am_set_destination(lyr, &msg, AM_BROADCAST_ADDR);
+	comms_am_set_source(lyr, &msg, AM_BROADCAST_ADDR);
 
 	debugb1("rx {%02"PRIX8"}",
 		payload, comms_get_payload_length(lyr, &msg),
