@@ -87,13 +87,13 @@ static void receive_message (comms_layer_t * comms, const comms_msg_t * msg, voi
 			break;
 		}
 	}
-	else warn1("size %d", (unsigned int)comms_get_payload_length(comms, msg));
+	else warn1("size %u", (unsigned int)comms_get_payload_length(comms, msg));
 }
 
 static void radio_send_done (comms_layer_t * comms, comms_msg_t * msg, comms_error_t result, void * user)
 {
 	am_addrdisco_t * disco = (am_addrdisco_t*)user;
-	logger(result == COMMS_SUCCESS ? LOG_DEBUG1: LOG_WARN1, "snt %u", result);
+	logger(result == COMMS_SUCCESS ? LOG_DEBUG1: LOG_WARN1, "snt %d", (int)result);
 	osThreadFlagsSet(disco->thread, AM_ADDRDISCO_FLAG_SENT);
 }
 
@@ -147,7 +147,7 @@ static void addrdisco_loop (void * arg)
 			comms_set_payload_length(disco->comms, &(disco->msg), sizeof(am_addrdisco_packet_t));
 
 			comms_error_t result = comms_send(disco->comms, &(disco->msg), radio_send_done, disco);
-			logger(result == COMMS_SUCCESS ? LOG_DEBUG1: LOG_WARN1, "snd %u", result);
+			logger(result == COMMS_SUCCESS ? LOG_DEBUG1: LOG_WARN1, "snd %d", (int)result);
 			if (COMMS_SUCCESS == result)
 			{
 				osThreadFlagsWait(AM_ADDRDISCO_FLAG_SENT, osFlagsWaitAny, osWaitForever);
