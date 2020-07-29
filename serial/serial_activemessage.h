@@ -32,7 +32,8 @@ typedef struct serial_activemessage serial_activemessage_t;
  *         or NULL for failure.
  */
 comms_layer_t* serial_activemessage_init (serial_activemessage_t * sam,
-                                          serial_protocol_t * spr);
+                                          serial_protocol_t * spr,
+                                          uint16_t pan_id, uint16_t address);
 
 /**
  * Deinitialize the SerialActiveMessage layer. The memory used by the instance
@@ -77,6 +78,9 @@ struct serial_activemessage
 	sam_queue_element_t * send_queue;
 	sam_queue_element_t * free_queue;
 	sam_queue_element_t queue_memory[SERIAL_ACTIVEMESSAGE_QUEUE_LENGTH];
+
+	am_addr_t am_addr;
+	am_group_t group_id;
 
 	bool send_busy;
 	uint8_t send_buffer[SERIAL_ACTIVEMESSAGE_MAX_MESSAGE_LENGTH];
