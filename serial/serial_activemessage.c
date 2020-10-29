@@ -140,7 +140,7 @@ static bool serial_am_receive(uint8_t dispatch, const uint8_t data[], uint8_t le
 
 	debugb1("rx {%02X}%04"PRIX16"->%04"PRIX16"[%02X]",
 		payload, comms_get_payload_length(lyr, &msg),
-		(int)m->group_id, // TODO grop variable stored in the packet
+		(int)m->group,
 		comms_am_get_source(lyr, &msg),
 		comms_am_get_destination(lyr, &msg),
 		comms_get_packet_type(lyr, &msg));
