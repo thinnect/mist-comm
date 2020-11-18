@@ -179,7 +179,7 @@ void comms_am_addrdisco_init (comms_layer_t * comms, am_addrdisco_t * disco, com
 	const osMutexAttr_t app_mutex_attr = { .attr_bits = osMutexPrioInherit };
 	disco->mutex = osMutexNew(&app_mutex_attr);
 
-	const osThreadAttr_t app_thread_attr = { .name = "disco" };
+	const osThreadAttr_t app_thread_attr = { .name = "disco", stack_size = 512 };
 	disco->thread = osThreadNew(addrdisco_loop, disco, &app_thread_attr);
 }
 
