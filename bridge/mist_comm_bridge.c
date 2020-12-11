@@ -37,9 +37,11 @@ comms_error_t comms_bridge_init (comms_bridge_t * bridge,
 
 	const osThreadAttr_t bridge_thread_1_attr = { .name = "bt1" };
 	bridge->t1.thread = osThreadNew(bridge_thread, &(bridge->t1), &bridge_thread_1_attr);
+	debug1("bt1 %p", bridge->t1.thread);
 
 	const osThreadAttr_t bridge_thread_2_attr = { .name = "bt2" };
 	bridge->t2.thread = osThreadNew(bridge_thread, &(bridge->t2), &bridge_thread_2_attr);
+	debug1("bt1 %p", bridge->t2.thread);
 
 	bridge->t1.layer = a;
 	bridge->t2.layer = b;
@@ -105,7 +107,7 @@ static void bridge_am_snoop (comms_layer_t* comms, const comms_msg_t* msg, void*
 
 	if(osMessageQueuePut(bt->rxqueue, msg, 0, 0) != osOK)
 	{
-		warn1("drop");
+		warn1("drop %p", user);
 	}
 }
 
@@ -133,8 +135,8 @@ static void bridge_thread (void * param)
 
 			if(COMMS_SUCCESS == comms_send(bt->layer, &(bt->msg), bridge_send_done, bt))
 			{
+				debug4("%p snd", &(bt->msg));
 				flags = osThreadFlagsWait(MIST_COMM_BRIDGE_FLAG_SEND_DONE, osFlagsWaitAny, osWaitForever);
-				debug4("snt");
 			}
 			else
 			{
