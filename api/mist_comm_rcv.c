@@ -102,6 +102,7 @@ comms_error_t comms_basic_deliver(comms_layer_t* layer, comms_msg_t* msg) {
 				if(eui64_is_zeros(&(source.eui)))
 				{
 					resolve = true;
+					continue; // Cannot deliver if source identity not known
 				}
 			}
 			delivered = true;

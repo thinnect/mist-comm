@@ -12,6 +12,7 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include "log.h"
 
 am_addr_t comms_am_address(comms_layer_t* comms) {
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
@@ -24,7 +25,8 @@ static am_addr_t am_comms_addr(comms_layer_am_t* comms) {
 
 static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) {
 	comms_am_msg_metadata_t* metadata = (comms_am_msg_metadata_t*)(msg->body.metadata);
-	memset(&(msg->body.destination), 0, sizeof(msg->body.destination));
+	memset(metadata,0x0,sizeof(comms_am_msg_metadata_t));
+	/*memset(&(msg->body.destination), 0, sizeof(msg->body.destination));
 	memset(&(msg->body.source), 0, sizeof(msg->body.source));
 	msg->body.length = 0;
 	metadata->timestamp_valid = false;
@@ -35,6 +37,7 @@ static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) 
 	metadata->retries = 0;
 	metadata->sent = 0;
 	metadata->lqi= 0;
+	*/
 	metadata->rssi = -128;
 }
 
