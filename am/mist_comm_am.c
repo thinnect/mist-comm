@@ -203,8 +203,9 @@ static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, const comms_m
 }
 static void am_comms_set_destination(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t dest) {
 	memset(&(msg->body.destination.local), 0, sizeof(msg->body.destination.local));
-	*((am_addr_t*)msg->body.destination.local.data) = dest;
-	*((am_addr_t*)msg->body.destination.updated) = 0;
+	*((am_addr_t*)msg->body.destination.local.data[0]) = dest & 0x00FF;
+	*((am_addr_t*)msg->body.destination.local.data[1]) = dest & 0xFF00;
+	//*((am_addr_t*)msg->body.destination.updated) = 0;
 	// *((am_addr_t*)msg->body.destination.updated) = now_s();
 }
 
@@ -213,8 +214,9 @@ static am_addr_t am_comms_get_source(comms_layer_am_t* comms, const comms_msg_t*
 }
 static void am_comms_set_source(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t source) {
 	memset(&(msg->body.source.local), 0, sizeof(msg->body.source.local));
-	*((am_addr_t*)msg->body.source.local.data) = source;
-	*((am_addr_t*)msg->body.source.updated) = 0;
+	*((am_addr_t*)msg->body.source.local.data[0]) = (source & 0xFF00);
+	*((am_addr_t*)msg->body.source.local.data[1]) = source & 0x00FF;
+	//*((am_addr_t*)msg->body.source.updated) = 0;
 	// *((am_addr_t*)msg->body.source.updated) = now_s();
 }
 
