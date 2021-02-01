@@ -12,7 +12,6 @@
 
 #include <stdbool.h>
 #include <string.h>
-#include "log.h"
 
 am_addr_t comms_am_address(comms_layer_t* comms) {
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
@@ -25,8 +24,7 @@ static am_addr_t am_comms_addr(comms_layer_am_t* comms) {
 
 static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) {
 	comms_am_msg_metadata_t* metadata = (comms_am_msg_metadata_t*)(msg->body.metadata);
-	memset(metadata,0x0,sizeof(comms_am_msg_metadata_t));
-	/*memset(&(msg->body.destination), 0, sizeof(msg->body.destination));
+	memset(&(msg->body.destination), 0, sizeof(msg->body.destination));
 	memset(&(msg->body.source), 0, sizeof(msg->body.source));
 	msg->body.length = 0;
 	metadata->timestamp_valid = false;
@@ -37,7 +35,6 @@ static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) 
 	metadata->retries = 0;
 	metadata->sent = 0;
 	metadata->lqi= 0;
-	*/
 	metadata->rssi = -128;
 }
 
@@ -203,10 +200,9 @@ static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, const comms_m
 }
 static void am_comms_set_destination(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t dest) {
 	memset(&(msg->body.destination.local), 0, sizeof(msg->body.destination.local));
-	*((am_addr_t*)msg->body.destination.local.data[0]) = dest & 0x00FF;
-	*((am_addr_t*)msg->body.destination.local.data[1]) = dest & 0xFF00;
-	//*((am_addr_t*)msg->body.destination.updated) = 0;
-	// *((am_addr_t*)msg->body.destination.updated) = now_s();
+	*((am_addr_t*)msg->body.destination.local.data) = dest;
+	*((am_addr_t*)msg->body.destination.updated) = 0;
+	//*((am_addr_t*)msg->body.destination.updated) = now_s();
 }
 
 static am_addr_t am_comms_get_source(comms_layer_am_t* comms, const comms_msg_t* msg) {
@@ -214,10 +210,9 @@ static am_addr_t am_comms_get_source(comms_layer_am_t* comms, const comms_msg_t*
 }
 static void am_comms_set_source(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t source) {
 	memset(&(msg->body.source.local), 0, sizeof(msg->body.source.local));
-	*((am_addr_t*)msg->body.source.local.data[0]) = (source & 0xFF00);
-	*((am_addr_t*)msg->body.source.local.data[1]) = source & 0x00FF;
-	//*((am_addr_t*)msg->body.source.updated) = 0;
-	// *((am_addr_t*)msg->body.source.updated) = now_s();
+	*((am_addr_t*)msg->body.source.local.data) = source;
+	*((am_addr_t*)msg->body.source.updated) = 0;
+	//*((am_addr_t*)msg->body.source.updated) = now_s();
 }
 
 am_addr_t comms_am_get_destination(comms_layer_t* comms, const comms_msg_t* msg) {
@@ -226,6 +221,7 @@ am_addr_t comms_am_get_destination(comms_layer_t* comms, const comms_msg_t* msg)
 }
 void comms_am_set_destination(comms_layer_t* comms, comms_msg_t* msg, am_addr_t dest) {
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)comms;
+	
 	amcomms->am_set_destination(amcomms, msg, dest);
 }
 
