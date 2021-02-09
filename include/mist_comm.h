@@ -245,12 +245,16 @@ void _comms_set_ack_received(comms_layer_t* comms, comms_msg_t* msg);
 
 // Check that the timestamp is valid with comms_timestamp_valid.
 uint32_t comms_get_timestamp(comms_layer_t* comms, const comms_msg_t* msg);
+uint32_t comms_get_timestamp_ms(comms_layer_t* comms, const comms_msg_t* msg);
+uint32_t comms_get_timestamp_us(comms_layer_t* comms, const comms_msg_t* msg);
 
 // return TRUE if message has valid timestamp
 bool comms_timestamp_valid(comms_layer_t* comms, const comms_msg_t* msg);
 
 // Set timestamp (low level - on receive and on send)
 comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp);
+comms_error_t comms_set_timestamp_ms(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp);
+comms_error_t comms_set_timestamp_us(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp);
 // -----------------------------------------------------------------------------
 
 // TimeSync messaging ----------------------------------------------------------
@@ -258,9 +262,13 @@ comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32
 
 // Set event time
 comms_error_t comms_set_event_time(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt);
+comms_error_t comms_set_event_time_ms(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt);
+comms_error_t comms_set_event_time_us(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt);
 
 // Check that event time is valid with comms_event_time_valid.
 uint32_t comms_get_event_time(comms_layer_t* comms, const comms_msg_t* msg);
+uint32_t comms_get_event_time_ms(comms_layer_t* comms, const comms_msg_t* msg);
+uint32_t comms_get_event_time_us(comms_layer_t* comms, const comms_msg_t* msg);
 
 // return TRUE if message has valid event time
 bool comms_event_time_valid(comms_layer_t* comms, const comms_msg_t* msg);

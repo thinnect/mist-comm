@@ -162,7 +162,23 @@ static comms_error_t am_comms_set_timestamp(comms_layer_iface_t* comms, comms_ms
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp_valid = true;
 	return COMMS_SUCCESS;
 }
+static comms_error_t am_comms_set_timestamp_ms(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t timestamp) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp = timestamp;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp_valid = true;
+	return COMMS_SUCCESS;
+}
+static comms_error_t am_comms_set_timestamp_us(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t timestamp) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp = timestamp;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp_valid = true;
+	return COMMS_SUCCESS;
+}
 static uint32_t am_comms_get_timestamp(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp;
+}
+static uint32_t am_comms_get_timestamp_ms(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp;
+}
+static uint32_t am_comms_get_timestamp_us(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->timestamp;
 }
 static bool am_comms_timestamp_valid(comms_layer_iface_t* comms, const comms_msg_t* msg) {
@@ -174,7 +190,23 @@ static comms_error_t am_comms_set_event_time(comms_layer_iface_t* comms, comms_m
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time_valid = true;
 	return COMMS_SUCCESS;
 }
+static comms_error_t am_comms_set_event_time_ms(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t evt) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time = evt;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time_valid = true;
+	return COMMS_SUCCESS;
+}
+static comms_error_t am_comms_set_event_time_us(comms_layer_iface_t* comms, comms_msg_t* msg, uint32_t evt) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time = evt;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time_valid = true;
+	return COMMS_SUCCESS;
+}
 static uint32_t am_comms_get_event_time(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time;
+}
+static uint32_t am_comms_get_event_time_ms(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time;
+}
+static uint32_t am_comms_get_event_time_us(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return ((comms_am_msg_metadata_t*)(msg->body.metadata))->event_time;
 }
 static bool am_comms_event_time_valid(comms_layer_iface_t* comms, const comms_msg_t* msg) {
@@ -281,11 +313,19 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
 	comms->set_ack_received = &am_comms_set_ack_received;
 
 	comms->set_timestamp = &am_comms_set_timestamp;
+	comms->set_timestamp_ms = &am_comms_set_timestamp_ms;
+	comms->set_timestamp_us = &am_comms_set_timestamp_us;
 	comms->get_timestamp = &am_comms_get_timestamp;
+	comms->get_timestamp_ms = &am_comms_get_timestamp_ms;
+	comms->get_timestamp_us = &am_comms_get_timestamp_us;
 	comms->timestamp_valid = &am_comms_timestamp_valid;
 
 	comms->set_event_time = &am_comms_set_event_time;
+	comms->set_event_time_ms = &am_comms_set_event_time_ms;
+	comms->set_event_time_us = &am_comms_set_event_time_us;
 	comms->get_event_time = &am_comms_get_event_time;
+	comms->get_event_time_ms = &am_comms_get_event_time_ms;
+	comms->get_event_time_us = &am_comms_get_event_time_us;
 	comms->event_time_valid = &am_comms_event_time_valid;
 
 	comms->get_lqi = &am_comms_get_lqi;

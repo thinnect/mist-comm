@@ -282,10 +282,38 @@ comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32
 	}
 	return COMMS_EINVAL;
 }
+comms_error_t comms_set_timestamp_ms(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_timestamp_ms(cl, msg, timestamp);
+	}
+	return COMMS_EINVAL;
+}
+comms_error_t comms_set_timestamp_us(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_timestamp_us(cl, msg, timestamp);
+	}
+	return COMMS_EINVAL;
+}
 uint32_t comms_get_timestamp(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_timestamp(cl, msg);
+	}
+	return 0;
+}
+uint32_t comms_get_timestamp_ms(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_timestamp_ms(cl, msg);
+	}
+	return 0;
+}
+uint32_t comms_get_timestamp_us(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_timestamp_us(cl, msg);
 	}
 	return 0;
 }
@@ -304,10 +332,38 @@ comms_error_t comms_set_event_time(comms_layer_t* comms, comms_msg_t* msg, uint3
 	}
 	return COMMS_EINVAL;
 }
+comms_error_t comms_set_event_time_ms(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_event_time_ms(cl, msg, evt);
+	}
+	return COMMS_EINVAL;
+}
+comms_error_t comms_set_event_time_us(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->set_event_time_us(cl, msg, evt);
+	}
+	return COMMS_EINVAL;
+}
 uint32_t comms_get_event_time(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_event_time(cl, msg);
+	}
+	return 0;
+}
+uint32_t comms_get_event_time_ms(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_event_time_ms(cl, msg);
+	}
+	return 0;
+}
+uint32_t comms_get_event_time_us(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_event_time_us(cl, msg);
 	}
 	return 0;
 }

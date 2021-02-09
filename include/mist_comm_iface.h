@@ -44,11 +44,19 @@ typedef bool comms_ack_received_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_ack_received_f(comms_layer_iface_t*, comms_msg_t*);
 
 typedef comms_error_t comms_set_timestamp_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
+typedef comms_error_t comms_set_timestamp_ms_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
+typedef comms_error_t comms_set_timestamp_us_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
 typedef uint32_t comms_get_timestamp_f(comms_layer_iface_t*, const comms_msg_t*);
+typedef uint32_t comms_get_timestamp_ms_f(comms_layer_iface_t*, const comms_msg_t*);
+typedef uint32_t comms_get_timestamp_us_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef bool comms_timestamp_valid_f(comms_layer_iface_t*, const comms_msg_t*);
 
 typedef comms_error_t comms_set_event_time_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
+typedef comms_error_t comms_set_event_time_ms_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
+typedef comms_error_t comms_set_event_time_us_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
 typedef uint32_t comms_get_event_time_f(comms_layer_iface_t*, const comms_msg_t*);
+typedef uint32_t comms_get_event_time_ms_f(comms_layer_iface_t*, const comms_msg_t*);
+typedef uint32_t comms_get_event_time_us_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef bool comms_event_time_valid_f(comms_layer_iface_t*, const comms_msg_t*);
 
 typedef uint8_t comms_get_lqi_f(comms_layer_iface_t*, const comms_msg_t*);
@@ -101,11 +109,19 @@ struct comms_layer_iface {
 	comms_set_ack_received_f* set_ack_received;
 
 	comms_set_timestamp_f* set_timestamp;
+	comms_set_timestamp_ms_f* set_timestamp_ms;
+	comms_set_timestamp_us_f* set_timestamp_us;
 	comms_get_timestamp_f* get_timestamp;
+	comms_get_timestamp_ms_f* get_timestamp_ms;
+	comms_get_timestamp_us_f* get_timestamp_us;
 	comms_timestamp_valid_f* timestamp_valid;
 
 	comms_set_event_time_f* set_event_time;
+	comms_set_event_time_ms_f* set_event_time_ms;
+	comms_set_event_time_us_f* set_event_time_us;
 	comms_get_event_time_f* get_event_time;
+	comms_get_event_time_ms_f* get_event_time_ms;
+	comms_get_event_time_us_f* get_event_time_us;
 	comms_event_time_valid_f* event_time_valid;
 
 	comms_get_lqi_f* get_lqi;
