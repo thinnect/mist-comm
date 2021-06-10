@@ -195,6 +195,21 @@ static void am_comms_set_rssi(comms_layer_iface_t* comms, comms_msg_t* msg, int8
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->rssi = rssi;
 }
 
+static int8_t am_comms_get_priority(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	if (true == ((comms_am_msg_metadata_t*)(msg->body.metadata))->priority_valid)
+	{
+		return ((comms_am_msg_metadata_t*)(msg->body.metadata))->priority;
+	}
+	else
+	{
+		return 0xFF;
+	}
+}
+static void am_comms_set_priority(comms_layer_iface_t* comms, comms_msg_t* msg, int8_t priority) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->priority_valid = true;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->priority = priority;
+}
+
 static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, const comms_msg_t* msg) {
 	return *((am_addr_t*)msg->body.destination.local.data);
 }
@@ -292,6 +307,9 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
 
 	comms->get_rssi = &am_comms_get_rssi;
 	comms->set_rssi = &am_comms_set_rssi;
+
+	comms->get_priority = &am_comms_get_priority;
+	comms->set_priority = &am_comms_set_priority;
 
 	amcomms->am_get_destination = &am_comms_get_destination;
 	amcomms->am_set_destination = &am_comms_set_destination;

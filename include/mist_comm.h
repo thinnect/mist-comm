@@ -274,6 +274,9 @@ void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi);
 // Value in dBm
 int8_t comms_get_rssi(comms_layer_t* comms, const comms_msg_t* msg);
 void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
+
+int8_t comms_get_priority(comms_layer_t* comms, const comms_msg_t* msg);
+void comms_set_priority(comms_layer_t* comms, comms_msg_t* msg, int8_t priority);
 // -----------------------------------------------------------------------------
 
 // Received message delivery ---------------------------------------------------

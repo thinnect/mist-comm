@@ -346,3 +346,17 @@ void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi) {
 		cl->set_rssi(cl, msg, rssi);
 	}
 }
+
+int8_t comms_get_priority(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_priority(cl, msg);
+	}
+	return 0xFF;
+}
+void comms_set_priority(comms_layer_t* comms, comms_msg_t* msg, int8_t priority) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		cl->set_priority(cl, msg, priority);
+	}
+}
