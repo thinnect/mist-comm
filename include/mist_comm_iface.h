@@ -57,8 +57,8 @@ typedef void comms_set_lqi_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
 typedef int8_t comms_get_rssi_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_rssi_f(comms_layer_iface_t*, comms_msg_t*, int8_t);
 
-typedef int8_t comms_get_priority_f(comms_layer_iface_t*, const comms_msg_t*);
-typedef void comms_set_priority_f(comms_layer_iface_t*, comms_msg_t*, int8_t);
+typedef uint8_t comms_get_priority_f(comms_layer_iface_t*, const comms_msg_t*);
+typedef void comms_set_priority_f(comms_layer_iface_t*, comms_msg_t*, uint8_t);
 // -----------------------------------------------------------------------------
 
 struct comms_layer_iface {

@@ -195,7 +195,7 @@ static void am_comms_set_rssi(comms_layer_iface_t* comms, comms_msg_t* msg, int8
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->rssi = rssi;
 }
 
-static int8_t am_comms_get_priority(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+static uint8_t am_comms_get_priority(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	if (true == ((comms_am_msg_metadata_t*)(msg->body.metadata))->priority_valid)
 	{
 		return ((comms_am_msg_metadata_t*)(msg->body.metadata))->priority;
@@ -205,7 +205,7 @@ static int8_t am_comms_get_priority(comms_layer_iface_t* comms, const comms_msg_
 		return 0xFF;
 	}
 }
-static void am_comms_set_priority(comms_layer_iface_t* comms, comms_msg_t* msg, int8_t priority) {
+static void am_comms_set_priority(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t priority) {
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->priority_valid = true;
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->priority = priority;
 }
