@@ -18,7 +18,7 @@ struct comms_msg {
 
 		uint8_t footer[COMMS_MSG_FOOTER_SIZE];
 		uint8_t metadata[COMMS_MSG_METADATA_SIZE];
-	} body;
+	} __attribute__((packed)) body;
 };
 
 // Receiver structure ----------------------------------------------------------

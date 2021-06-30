@@ -57,7 +57,7 @@ typedef struct comms_layer {
  */
 typedef struct comms_local_addr {
 	uint8_t data[COMMS_MSG_ADDRESSING_SIZE];
-} comms_local_addr_t;
+} __attribute__((packed))comms_local_addr_t;
 
 /**
  * The comms address structure.
@@ -66,7 +66,7 @@ typedef struct comms_address {
 	ieee_eui64_t eui;
 	comms_local_addr_t local;
 	uint32_t updated; // Timestamp, seconds
-} comms_address_t;
+} __attribute__((packed))comms_address_t;
 
 /*
  * The comms message structure. Should only be manipulated through the APIs.
