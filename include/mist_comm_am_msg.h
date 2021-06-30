@@ -28,6 +28,6 @@ typedef struct comms_am_msg_metadata {
 
 	bool priority_valid;
 	uint8_t priority;
-} comms_am_msg_metadata_t;
+}__attribute__((packed))comms_am_msg_metadata_t;
 
 #endif//MIST_COMM_AM_H_
