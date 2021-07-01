@@ -25,6 +25,9 @@ typedef struct comms_am_msg_metadata {
 
 	bool event_time_valid;
 	uint32_t event_time;
-} comms_am_msg_metadata_t;
+
+	bool priority_valid;
+	uint8_t priority;
+}__attribute__((packed))comms_am_msg_metadata_t;
 
 #endif//MIST_COMM_AM_H_

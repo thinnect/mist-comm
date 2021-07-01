@@ -195,24 +195,39 @@ static void am_comms_set_rssi(comms_layer_iface_t* comms, comms_msg_t* msg, int8
 	((comms_am_msg_metadata_t*)(msg->body.metadata))->rssi = rssi;
 }
 
+static uint8_t am_comms_get_priority(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	if (true == ((comms_am_msg_metadata_t*)(msg->body.metadata))->priority_valid)
+	{
+		return ((comms_am_msg_metadata_t*)(msg->body.metadata))->priority;
+	}
+	else
+	{
+		return 0xFF;
+	}
+}
+static void am_comms_set_priority(comms_layer_iface_t* comms, comms_msg_t* msg, uint8_t priority) {
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->priority_valid = true;
+	((comms_am_msg_metadata_t*)(msg->body.metadata))->priority = priority;
+}
+
 static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, const comms_msg_t* msg) {
-	return *((am_addr_t*)msg->body.destination.local.data);
+	return *((__packed am_addr_t*)msg->body.destination.local.data);
 }
 static void am_comms_set_destination(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t dest) {
 	memset(&(msg->body.destination.local), 0, sizeof(msg->body.destination.local));
-	*((am_addr_t*)msg->body.destination.local.data) = dest;
-	*((am_addr_t*)msg->body.destination.updated) = 0;
-	// *((am_addr_t*)msg->body.destination.updated) = now_s();
+	*((__packed am_addr_t*)msg->body.destination.local.data) = dest;
+	msg->body.destination.updated = 0;
+	//msg->body.destination.updated) = now_s();
 }
 
 static am_addr_t am_comms_get_source(comms_layer_am_t* comms, const comms_msg_t* msg) {
-	return *((am_addr_t*)msg->body.source.local.data);
+	return *((__packed am_addr_t*)msg->body.source.local.data);
 }
 static void am_comms_set_source(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t source) {
 	memset(&(msg->body.source.local), 0, sizeof(msg->body.source.local));
-	*((am_addr_t*)msg->body.source.local.data) = source;
-	*((am_addr_t*)msg->body.source.updated) = 0;
-	// *((am_addr_t*)msg->body.source.updated) = now_s();
+	*((__packed am_addr_t*)msg->body.source.local.data) = source;
+	msg->body.source.updated = 0;
+	//msg->body.source.updated = now_s();
 }
 
 am_addr_t comms_am_get_destination(comms_layer_t* comms, const comms_msg_t* msg) {
@@ -292,6 +307,9 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
 
 	comms->get_rssi = &am_comms_get_rssi;
 	comms->set_rssi = &am_comms_set_rssi;
+
+	comms->get_priority = &am_comms_get_priority;
+	comms->set_priority = &am_comms_set_priority;
 
 	amcomms->am_get_destination = &am_comms_get_destination;
 	amcomms->am_set_destination = &am_comms_set_destination;

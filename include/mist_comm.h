@@ -57,7 +57,7 @@ typedef struct comms_layer {
  */
 typedef struct comms_local_addr {
 	uint8_t data[COMMS_MSG_ADDRESSING_SIZE];
-} comms_local_addr_t;
+} __attribute__((packed))comms_local_addr_t;
 
 /**
  * The comms address structure.
@@ -66,7 +66,7 @@ typedef struct comms_address {
 	ieee_eui64_t eui;
 	comms_local_addr_t local;
 	uint32_t updated; // Timestamp, seconds
-} comms_address_t;
+} __attribute__((packed))comms_address_t;
 
 /*
  * The comms message structure. Should only be manipulated through the APIs.
@@ -274,6 +274,9 @@ void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi);
 // Value in dBm
 int8_t comms_get_rssi(comms_layer_t* comms, const comms_msg_t* msg);
 void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi);
+
+int8_t comms_get_priority(comms_layer_t* comms, const comms_msg_t* msg);
+void comms_set_priority(comms_layer_t* comms, comms_msg_t* msg, int8_t priority);
 // -----------------------------------------------------------------------------
 
 // Received message delivery ---------------------------------------------------
