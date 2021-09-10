@@ -211,21 +211,37 @@ static void am_comms_set_priority(comms_layer_iface_t* comms, comms_msg_t* msg, 
 }
 
 static am_addr_t am_comms_get_destination(comms_layer_am_t* comms, const comms_msg_t* msg) {
+#ifdef ALIGN_CM0
 	return *((__packed am_addr_t*)msg->body.destination.local.data);
+#else
+	return *((am_addr_t*)msg->body.destination.local.data);
+#endif
 }
 static void am_comms_set_destination(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t dest) {
 	memset(&(msg->body.destination.local), 0, sizeof(msg->body.destination.local));
+#ifdef ALIGN_CM0
 	*((__packed am_addr_t*)msg->body.destination.local.data) = dest;
+#else
+	*((am_addr_t*)msg->body.destination.local.data) = dest;
+#endif
 	msg->body.destination.updated = 0;
 	//msg->body.destination.updated) = now_s();
 }
 
 static am_addr_t am_comms_get_source(comms_layer_am_t* comms, const comms_msg_t* msg) {
+#ifdef ALIGN_CM0
 	return *((__packed am_addr_t*)msg->body.source.local.data);
+#else
+	return *((am_addr_t*)msg->body.source.local.data);
+#endif
 }
 static void am_comms_set_source(comms_layer_am_t* comms, comms_msg_t* msg, am_addr_t source) {
 	memset(&(msg->body.source.local), 0, sizeof(msg->body.source.local));
+#ifdef ALIGN_CM0
 	*((__packed am_addr_t*)msg->body.source.local.data) = source;
+#else
+	*((am_addr_t*)msg->body.source.local.data) = source;
+#endif
 	msg->body.source.updated = 0;
 	//msg->body.source.updated = now_s();
 }
