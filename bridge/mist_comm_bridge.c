@@ -41,7 +41,7 @@ comms_error_t comms_bridge_init (comms_bridge_t * bridge,
 
 	const osThreadAttr_t bridge_thread_2_attr = { .name = "bt2" };
 	bridge->t2.thread = osThreadNew(bridge_thread, &(bridge->t2), &bridge_thread_2_attr);
-	debug1("bt1 %p", bridge->t2.thread);
+	debug1("bt2 %p", bridge->t2.thread);
 
 	bridge->t1.layer = a;
 	bridge->t2.layer = b;
