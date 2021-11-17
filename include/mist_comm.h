@@ -355,7 +355,7 @@ bool comms_sleep_blocked(comms_sleep_controller_t * ctrl);
  * Create a mutex.
  * @return NULL for failure.
  */
-commsMutexId_t comms_mutex_create();
+commsMutexId_t comms_mutex_create(void);
 
 /**
  * Acquire the specified mutex. Blocks until aquired.
