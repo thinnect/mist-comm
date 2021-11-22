@@ -14,6 +14,8 @@ typedef void comms_init_message_f(comms_layer_iface_t*, comms_msg_t*);
 typedef comms_error_t comms_send_f(comms_layer_iface_t*, comms_msg_t*, comms_send_done_f*, void*);
 typedef bool comms_deliver_f(comms_layer_iface_t*, comms_msg_t*);
 
+typedef uint8_t comms_plen_f(comms_layer_iface_t*);
+
 typedef comms_error_t comms_register_recv_f(comms_layer_iface_t*, comms_receiver_t*, comms_receive_f*, void*, am_id_t, bool);
 typedef comms_error_t comms_deregister_recv_f(comms_layer_iface_t*, comms_receiver_t*);
 
@@ -22,6 +24,9 @@ typedef comms_error_t comms_deregister_snooper_f(comms_layer_iface_t*, comms_rec
 
 typedef am_id_t comms_get_packet_type_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_packet_type_f(comms_layer_iface_t*, comms_msg_t*, am_id_t);
+
+typedef uint16_t comms_get_packet_group_f(comms_layer_iface_t*, const comms_msg_t*);
+typedef void comms_set_packet_group_f(comms_layer_iface_t*, comms_msg_t*, uint16_t);
 
 typedef uint8_t comms_get_payload_max_length_f(comms_layer_iface_t*);
 typedef uint8_t comms_get_payload_length_f(comms_layer_iface_t*, const comms_msg_t*);
@@ -82,6 +87,9 @@ struct comms_layer_iface {
 
 	comms_get_packet_type_f* get_packet_type;
 	comms_set_packet_type_f* set_packet_type;
+
+	comms_get_packet_group_f* get_packet_group;
+	comms_set_packet_group_f* set_packet_group;
 
 	comms_get_payload_max_length_f* get_payload_max_length;
 	comms_get_payload_length_f* get_payload_length;

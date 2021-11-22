@@ -97,14 +97,22 @@ static comms_error_t am_comms_send(comms_layer_iface_t* iface, comms_msg_t* msg,
 }
 
 static am_id_t am_comms_get_packet_type(comms_layer_iface_t* comms, const comms_msg_t* msg) {
-	return msg->body.type;
+	return 0xFF & msg->body.type;
 }
 static void am_comms_set_packet_type(comms_layer_iface_t* comms, comms_msg_t* msg, am_id_t ptype) {
-	msg->body.type = ptype;
+	msg->body.type = 0x3F00 + ptype;
 }
 
-static uint8_t am_comms_get_payload_max_length(comms_layer_iface_t* comms) {
-	return 114;
+static uint16_t am_comms_get_packet_group(comms_layer_iface_t* comms, const comms_msg_t* msg) {
+	return msg->body.group;
+}
+static void am_comms_set_packet_group(comms_layer_iface_t* comms, comms_msg_t* msg, uint16_t group) {
+	msg->body.group = group;
+}
+
+static uint8_t am_comms_get_payload_max_length(comms_layer_iface_t* iface) {
+	comms_layer_am_t* amcomms = (comms_layer_am_t*)iface;
+	return amcomms->link_plenf(iface);
 }
 static uint8_t am_comms_get_payload_length(comms_layer_iface_t* comms, const comms_msg_t* msg) {
 	return msg->body.length;
@@ -265,7 +273,8 @@ void comms_am_set_source(comms_layer_t* comms, comms_msg_t* msg, am_addr_t sourc
 }
 
 comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
-	comms_send_f* sendf, comms_start_f* startf, comms_stop_f* stopf) {
+	comms_send_f* sendf, comms_plen_f* plenf,
+	comms_start_f* startf, comms_stop_f* stopf) {
 
 	comms_layer_iface_t* comms = (comms_layer_iface_t*)layer;
 	comms_layer_am_t* amcomms = (comms_layer_am_t*)layer;
@@ -291,6 +300,10 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
 	comms->get_packet_type = &am_comms_get_packet_type;
 	comms->set_packet_type = &am_comms_set_packet_type;
 
+	comms->get_packet_group = &am_comms_get_packet_group;
+	comms->set_packet_group = &am_comms_set_packet_group;
+
+	amcomms->link_plenf = plenf;
 	comms->get_payload_max_length = &am_comms_get_payload_max_length;
 	comms->get_payload_length = &am_comms_get_payload_length;
 	comms->set_payload_length = &am_comms_set_payload_length;

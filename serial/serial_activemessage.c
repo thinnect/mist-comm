@@ -39,6 +39,8 @@ typedef struct tos_serial_message
 static comms_error_t serial_activemessage_send (comms_layer_iface_t * iface,
                                                 comms_msg_t * msg,
                                                 comms_send_done_f * send_done, void * user);
+static uint8_t serial_activemessage_max_length (comms_layer_iface_t * iface);
+
 static bool serial_am_receive(uint8_t dspch, const uint8_t data[], uint8_t length, void* user);
 static void serial_am_senddone(uint8_t dspch, const uint8_t data[], uint8_t length, bool acked, void* user);
 static void serial_am_timer_cb(void * argument);
@@ -48,7 +50,7 @@ comms_layer_t* serial_activemessage_init (serial_activemessage_t* sam, serial_pr
 	sam->mutex = osMutexNew(NULL);
 	sam->timer = osTimerNew(&serial_am_timer_cb, osTimerOnce, sam, NULL);
 
-	sam->group_id = pan_id;
+	sam->pan_id = pan_id;
 
 	// Initialize send queueing system
 	sam->send_busy = false;
@@ -65,13 +67,15 @@ comms_layer_t* serial_activemessage_init (serial_activemessage_t* sam, serial_pr
 	// Set up dispatcher
 	sam->protocol = spr;
 	serial_protocol_add_dispatcher(sam->protocol, 0x00,
-		                           &(sam->dispatcher),
-		                           &serial_am_receive, &serial_am_senddone,
-		                           sam);
+	                               &(sam->dispatcher),
+	                               &serial_am_receive, &serial_am_senddone,
+	                               sam);
 
 	// Set up the mist-comm layer
 	// TODO start-stop handlers
-	comms_am_create((comms_layer_t *)sam, address, &serial_activemessage_send, NULL, NULL);
+	comms_am_create((comms_layer_t *)sam, address,
+	                &serial_activemessage_send, &serial_activemessage_max_length,
+	                NULL, NULL);
 
 	// serial_activemessage_t is a valid comms_layer_t
 	return (comms_layer_t *)sam;
@@ -130,6 +134,8 @@ static bool serial_am_receive(uint8_t dispatch, const uint8_t data[], uint8_t le
 	}
 
 	comms_set_packet_type(lyr, &msg, m->amid);
+	// SAM group is 8-bits, PAN is 16. Add higher bits according to configured PAN
+	comms_set_packet_group(lyr, &msg, m->group | (sam->pan_id & 0xFF00));
 	comms_set_payload_length(lyr, &msg, m->payload_length);
 	memcpy(payload, (const void *)m->payload, m->payload_length);
 
@@ -138,12 +144,12 @@ static bool serial_am_receive(uint8_t dispatch, const uint8_t data[], uint8_t le
 	comms_am_set_destination(lyr, &msg, ntoh16(m->destination));
 	comms_am_set_source(lyr, &msg, ntoh16(m->source));
 
-	debugb1("rx {%02X}%04"PRIX16"->%04"PRIX16"[%02X]",
+	debugb1("rx {%02"PRIX16"}%04"PRIX16"->%04"PRIX16"[%02X]",
 		payload, comms_get_payload_length(lyr, &msg),
-		(int)m->group,
+		comms_get_packet_group(lyr, &msg),
 		comms_am_get_source(lyr, &msg),
 		comms_am_get_destination(lyr, &msg),
-		comms_get_packet_type(lyr, &msg));
+		(unsigned int)comms_get_packet_type(lyr, &msg));
 
 	comms_deliver(lyr, &msg);
 
@@ -172,6 +178,12 @@ static uint16_t prepare_sp_message(uint8_t buffer[], uint16_t length, comms_msg_
 		{
 			tos_serial_message_t* m = (tos_serial_message_t*)buffer;
 			uint16_t src = comms_am_get_source(lyr, msg);
+			uint16_t group = comms_get_packet_group(lyr, msg);
+
+			if (0 == group)
+			{
+				group = sam->pan_id;
+			}
 
 			if (0 == src)
 			{
@@ -180,7 +192,7 @@ static uint16_t prepare_sp_message(uint8_t buffer[], uint16_t length, comms_msg_
 
 			m->destination = hton16(comms_am_get_destination(lyr, msg));
 			m->source = hton16(src);
-			m->group = sam->group_id; // TODO variable
+			m->group = 0xFF & group; // Group/PAN is 16-bits, however, the TinyOS SAM protocol only supports 8-bits.
 			m->amid = comms_get_packet_type(lyr, msg);
 			m->payload_length = plen;
 			memcpy(m->payload, payload, plen);
@@ -328,4 +340,9 @@ static comms_error_t serial_activemessage_send (comms_layer_iface_t * iface,
 	osMutexRelease(sam->mutex);
 
 	return result;
+}
+
+static uint8_t serial_activemessage_max_length (comms_layer_iface_t * iface)
+{
+    return COMMS_MSG_PAYLOAD_SIZE;
 }

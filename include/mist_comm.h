@@ -200,6 +200,11 @@ am_id_t comms_get_packet_type(comms_layer_t* comms, const comms_msg_t* msg);
 void comms_set_packet_type(comms_layer_t* comms, comms_msg_t* msg, am_id_t ptype);
 // -----------------------------------------------------------------------------
 
+// Packet group (PAN ID, AM group, etc) ----------------------------------------
+uint16_t comms_get_packet_group(comms_layer_t* comms, const comms_msg_t* msg);
+void comms_set_packet_group(comms_layer_t* comms, comms_msg_t* msg, uint16_t group);
+// -----------------------------------------------------------------------------
+
 // Addressing ------------------------------------------------------------------
 void comms_get_destination(comms_layer_t* comms, const comms_msg_t* msg, comms_address_t* destination);
 void comms_set_destination(comms_layer_t* comms, comms_msg_t* msg, const comms_address_t* destination);

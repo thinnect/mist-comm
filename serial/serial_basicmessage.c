@@ -24,6 +24,8 @@
 static comms_error_t serial_basicmessage_send (comms_layer_iface_t * iface,
                                                comms_msg_t * msg,
                                                comms_send_done_f * send_done, void * user);
+static uint8_t serial_basicmessage_max_length (comms_layer_iface_t * iface);
+
 static bool serial_bm_receive(uint8_t dspch, const uint8_t data[], uint8_t length, void* user);
 static void serial_bm_senddone(uint8_t dspch, const uint8_t data[], uint8_t length, bool acked, void* user);
 static void serial_bm_timer_cb(void * argument);
@@ -50,13 +52,15 @@ comms_layer_t* serial_basicmessage_init (serial_basicmessage_t * sbm, serial_pro
 	// Set up dispatcher
 	sbm->protocol = spr;
 	serial_protocol_add_dispatcher(sbm->protocol, dispatch,
-		                           &(sbm->dispatcher),
-		                           &serial_bm_receive, &serial_bm_senddone,
-		                           sbm);
+	                               &(sbm->dispatcher),
+	                               &serial_bm_receive, &serial_bm_senddone,
+	                               sbm);
 
 	// Set up the mist-comm layer
 	// TODO start-stop handlers
-	comms_am_create((comms_layer_t *)sbm, 0, &serial_basicmessage_send, NULL, NULL);
+	comms_am_create((comms_layer_t *)sbm, 0,
+	                &serial_basicmessage_send, &serial_basicmessage_max_length,
+	                NULL, NULL);
 
 	// serial_basicmessage_t is a semi-valid comms_layer_t
 	return (comms_layer_t *)sbm;
@@ -248,4 +252,9 @@ static comms_error_t serial_basicmessage_send (comms_layer_iface_t * iface,
 	osMutexRelease(sbm->mutex);
 
 	return result;
+}
+
+static uint8_t serial_basicmessage_max_length (comms_layer_iface_t * iface)
+{
+    return COMMS_MSG_PAYLOAD_SIZE;
 }

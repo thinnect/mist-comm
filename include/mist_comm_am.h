@@ -28,6 +28,7 @@ struct comms_layer_am {
 	comms_am_addr_f* am_address;
 
 	comms_send_f* link_sendf;
+	comms_plen_f* link_plenf;
 
 	am_addr_t am_addr;
 
@@ -49,7 +50,8 @@ void comms_am_set_source(comms_layer_t* comms, comms_msg_t* msg, am_addr_t sourc
 // -----------------------------------------------------------------------------
 
 // Create an ActiveMessage comms layer -----------------------------------------
-comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address, comms_send_f* sender,
+comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
+                              comms_send_f* sendf, comms_plen_f* plenf,
                               comms_start_f* startf, comms_stop_f* stopf);
 // -----------------------------------------------------------------------------
 

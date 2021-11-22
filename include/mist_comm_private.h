@@ -6,7 +6,9 @@
 // Message structure -----------------------------------------------------------
 struct comms_msg {
 	struct {
-		am_id_t type; // AMID, port?
+		uint16_t type; // 0x3F00 + AMID
+
+		uint16_t group; // PAN_ID - 0x0000 + AM Group
 
 		comms_address_t source;
 		comms_address_t destination;

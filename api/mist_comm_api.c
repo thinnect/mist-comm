@@ -177,6 +177,20 @@ void comms_set_packet_type(comms_layer_t* comms, comms_msg_t* msg, am_id_t ptype
 	}
 }
 
+uint16_t comms_get_packet_group(comms_layer_t* comms, const comms_msg_t* msg) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		return cl->get_packet_group(cl, msg);
+	}
+	return 0;
+}
+void comms_set_packet_group(comms_layer_t* comms, comms_msg_t* msg, uint16_t group) {
+	if((msg != NULL)&&(comms != NULL)) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		cl->set_packet_group(cl, msg, group);
+	}
+}
+
 uint8_t comms_get_payload_max_length(comms_layer_t* comms) {
 	return ((comms_layer_iface_t*)comms)->get_payload_max_length((comms_layer_iface_t*)comms);
 }

@@ -80,7 +80,8 @@ struct serial_activemessage
 	sam_queue_element_t queue_memory[SERIAL_ACTIVEMESSAGE_QUEUE_LENGTH];
 
 	am_addr_t am_addr;
-	am_group_t group_id;
+
+	uint16_t pan_id; // only 8-bits currently get sent on the wire!
 
 	bool send_busy;
 	uint8_t send_buffer[SERIAL_ACTIVEMESSAGE_MAX_MESSAGE_LENGTH];
