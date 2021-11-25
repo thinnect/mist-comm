@@ -26,6 +26,8 @@ static void am_comms_init_message(comms_layer_iface_t* comms, comms_msg_t* msg) 
 	comms_am_msg_metadata_t* metadata = (comms_am_msg_metadata_t*)(msg->body.metadata);
 	memset(&(msg->body.destination), 0, sizeof(msg->body.destination));
 	memset(&(msg->body.source), 0, sizeof(msg->body.source));
+	msg->body.type = 0;
+	msg->body.group = 0;
 	msg->body.length = 0;
 	metadata->timestamp_valid = false;
 	metadata->event_time_valid = false;

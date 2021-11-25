@@ -1,6 +1,11 @@
-#ifndef MIST_COMM_H_
-#define MIST_COMM_H_
-// Mist Communication API ------------------------------------------------------
+/**
+ * Mist communications API.
+ *
+ * Copyright Thinnect Inc. 2021
+ * @license MIT
+ */
+#ifndef MIST_COMM_H
+#define MIST_COMM_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -13,6 +18,17 @@
 
 #include "platform_msg.h"
 
+#define MIST_COMM_VERSION_MAJOR 0
+#define MIST_COMM_VERSION_MINOR 0
+#define MIST_COMM_VERSION_PATCH 0
+
+/**
+ * Communication layer result values. Generally derived from TinyOS error_t,
+ * however, all bad things have a negative value and there is a positive
+ * ALREADY.
+ *
+ * FIXME: Can we retire COMMS_EALREADY?
+ */
 typedef enum CommsErrors {
 	COMMS_UNINITIALIZED = -127,
 	COMMS_NOT_SUPPORTED = -126,
@@ -24,7 +40,7 @@ typedef enum CommsErrors {
 	COMMS_ETIMEOUT      = -12,
 	COMMS_ENOACK        = -11,
 	COMMS_ENOMEM        = -10,
-	COMMS_EALREADY      = -9, // Would prefer to use positive COMMS_ALREADY instead
+	COMMS_EALREADY      = -9, // Use positive COMMS_ALREADY instead!
 	COMMS_ERESERVE      = -8,
 	COMMS_ERETRY        = -7,
 	COMMS_EINVAL        = -6,
@@ -38,6 +54,9 @@ typedef enum CommsErrors {
 	COMMS_ALREADY       = 1
 } comms_error_t;
 
+/**
+ * Communication layer status values (states).
+ */
 typedef enum CommsStatus {
 	COMMS_STOPPING = -2,
 	COMMS_STARTING = -1,
@@ -45,6 +64,10 @@ typedef enum CommsStatus {
 	COMMS_STARTED  =  1
 } comms_status_t;
 
+/**
+ * Base structure for communications layers. Every interface has a type
+ * and an EUI-64 address.
+ */
 typedef struct comms_layer {
 	uint8_t type; // TODO type definitions for reflection
 	ieee_eui64_t eui;
@@ -53,14 +76,16 @@ typedef struct comms_layer {
 
 /**
  * The comms local address structure. This carries a link-local address which
- * may take different forms.
+ * may take different forms, depending on the environment.
  */
 typedef struct comms_local_addr {
 	uint8_t data[COMMS_MSG_ADDRESSING_SIZE];
 } __attribute__((packed))comms_local_addr_t;
 
 /**
- * The comms address structure.
+ * The comms address structure, carries mappings from globally unique EUI64
+ * addresses to link-local platform/environment specific addresses.
+ * It should be assumed that the local address may change at runtime!
  */
 typedef struct comms_address {
 	ieee_eui64_t eui;
@@ -68,7 +93,7 @@ typedef struct comms_address {
 	uint32_t updated; // Timestamp, seconds
 } __attribute__((packed))comms_address_t;
 
-/*
+/**
  * The comms message structure. Should only be manipulated through the APIs.
  */
 typedef struct comms_msg comms_msg_t;
@@ -86,7 +111,7 @@ typedef struct comms_msg comms_msg_t;
  * @param result The result of the transmission.
  * @param user The user pointer provided to comms_send.
  */
-typedef void comms_send_done_f(comms_layer_t* comms, comms_msg_t* msg, comms_error_t result, void* user);
+typedef void comms_send_done_f (comms_layer_t * comms, comms_msg_t * msg, comms_error_t result, void * user);
 
 /**
  * Signalled when a message is received. Functions of this type must first be
@@ -96,7 +121,7 @@ typedef void comms_send_done_f(comms_layer_t* comms, comms_msg_t* msg, comms_err
  * @param msg The message, only valid while this call is running.
  * @param user The user pointer given to comms_register_recv.
  */
-typedef void comms_receive_f(comms_layer_t* comms, const comms_msg_t* msg, void* user);
+typedef void comms_receive_f (comms_layer_t * comms, const comms_msg_t * msg, void * user);
 
 /**
  * Signalled when a status change is requested and completed.
@@ -105,7 +130,7 @@ typedef void comms_receive_f(comms_layer_t* comms, const comms_msg_t* msg, void*
  * @param status The new status (may not be what was actually requested).
  * @param user The user pointer.
  */
-typedef void comms_status_change_f(comms_layer_t* comms, comms_status_t status, void* user);
+typedef void comms_status_change_f (comms_layer_t * comms, comms_status_t status, void * user);
 
 // -----------------------------------------------------------------------------
 
@@ -116,7 +141,7 @@ typedef void comms_status_change_f(comms_layer_t* comms, comms_status_t status, 
  * @param user Argument passed to the callback.
  * @return COMMS_SUCCESS if the callback will be called in the future.
  */
-comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_done, void* user);
+comms_error_t comms_start (comms_layer_t * comms, comms_status_change_f * start_done, void * user);
 
 /**
  * Stop a comms layer. Use this or sleep controllers, not both.
@@ -125,83 +150,193 @@ comms_error_t comms_start(comms_layer_t* comms, comms_status_change_f* start_don
  * @param user Argument passed to the callback.
  * @return COMMS_SUCCESS if the callback will be called in the future.
  */
-comms_error_t comms_stop(comms_layer_t* comms, comms_status_change_f* stop_done, void* user);
+comms_error_t comms_stop (comms_layer_t * comms, comms_status_change_f * stop_done, void * user);
 
 /**
  * Get current status of the comms layer.
+ * @param comms The comms layer to query.
  * @return Current status.
  */
-comms_status_t comms_status(comms_layer_t* comms);
+comms_status_t comms_status (comms_layer_t * comms);
 
 // -----------------------------------------------------------------------------
 
-// Initialize a message structure for use on the specified communications
-// layer. Must be called before any packet functions can be used.
-void comms_init_message(comms_layer_t* comms, comms_msg_t* msg);
+/**
+ * Initialize a message structure for use on the specified communications
+ * layer. Must be called before any packet functions can be used. A message
+ * initialized with one comms layer must not be used with another layer, unless
+ * initialized again with that layer!
+ *
+ * @param comms The comms layer to use for initilization.
+ * @param msg The message to initialize.
+ */
+void comms_init_message (comms_layer_t * comms, comms_msg_t * msg);
 
-// Send a message through the specified communications layer.
-// The callback function specified with the send done function argument sdf will
-// be called some time in the future if comms_send returns SUCCESS. The sdf
-// argument is mandatory, the user argument may be NULL.
-comms_error_t comms_send(comms_layer_t* comms, comms_msg_t* msg, comms_send_done_f* sdf, void* user);
+/**
+ * Send a message through the specified communications layer.
+ *
+ * The message must stay allocated and not be modified while the layer is
+ * processing it (until send-done is called).
+ *
+ * @param comms The comms layer to use for sending the message.
+ * @param msg The message to send.
+ * @param sdf Pointer to a send-done function.
+ * @param user Optional user pointer, returned in send-done.
+ * @return COMMS_SUCCESS, if the send-done function will be called some time in the future.
+ */
+comms_error_t comms_send (comms_layer_t * comms, comms_msg_t * msg, comms_send_done_f * sdf, void * user);
 
 // Receiver registration ------------------------------------------
 
+/**
+ * Receiver structure for registering a receive callback.
+ * Must not go out of scope before it is deregistered!
+ */
 typedef struct comms_receiver comms_receiver_t;
 
 /**
- * Register to receive messages.
+ * Register to receive messages of a specific type.
  *
  * Must pass an unused comms_receiver_t object, guaranteeing that the
  * memory remains allocated and is not used elsewhere until deregister is called.
- * One receiver object may not be used in multiple roles at the same time, but
- * the same receive function can be registered several times with different
- * conditions and/or with a different user argument.
+ *
+ * One receiver object may not be used in multiple roles at the same time
+ *
+ * The same receive function may be registered several times with different
+ * conditions and/or with a different user pointer.
+ *
+ * Multiple receivers may be registered for the same packet type, the message will
+ * be delivered to all receivers.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param rcvr Receiver structure.
+ * @param func The receive function to call when a packet is received.
+ * @param user User pointer to be passed to the receive function on packet reception.
+ * @param amid The message type to register the receiver for.
  */
-comms_error_t comms_register_recv(comms_layer_t* comms,
-                                  comms_receiver_t* rcvr,
-                                  comms_receive_f* func, void *user,
-                                  am_id_t amid);
+comms_error_t comms_register_recv (comms_layer_t * comms,
+                                   comms_receiver_t * rcvr,
+                                   comms_receive_f * func, void * user,
+                                   am_id_t amid);
 
 /**
- * Register to receive messages, require the EUI64 addresses to be resolved.
+ * Register to receive messages, requesting the EUI64 addresses to be resolved.
+ *
+ * Receive callbacks will still be called, even if the EUI64 of the sender is not
+ * known, but the comms layer will attempt to resolve the address for subsequent
+ * messages.
  *
  * Must pass an unused comms_receiver_t object, guaranteeing that the
  * memory remains allocated and is not used elsewhere until deregister is called.
- * One receiver object may not be used in multiple roles at the same time, but
- * the same receive function can be registered several times with different
- * conditions and/or with a different user argument.
+ *
+ * One receiver object may not be used in multiple roles at the same time
+ *
+ * The same receive function may be registered several times with different
+ * conditions and/or with a different user pointer.
+ *
+ * Multiple receivers may be registered for the same packet type, the message will
+ * be delivered to all receivers.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param rcvr Receiver structure.
+ * @param func The receive function to call when a packet is received.
+ * @param user User pointer to be passed to the receive function on packet reception.
+ * @param amid The message type to register the receiver for.
+ * @return COMMS_SUCCESS if successfully registered.
  */
-comms_error_t comms_register_recv_eui(comms_layer_t* comms,
-                                      comms_receiver_t* rcvr,
-                                      comms_receive_f* func, void *user,
-                                      am_id_t amid);
+comms_error_t comms_register_recv_eui (comms_layer_t * comms,
+                                       comms_receiver_t * rcvr,
+                                       comms_receive_f * func, void * user,
+                                       am_id_t amid);
 
-
-// ??? Open questions regarding receivers and their registration:
-// AMID param should be some form of generic args, but this is C ... are we ok
-// to only have the 8-bit AM ID or should we expand and rename? 16 bit port?
-// Are any other filtering options needed for receiveres?
-// ???
-
-// Remove an already registered receiver.
-comms_error_t comms_deregister_recv(comms_layer_t* comms, comms_receiver_t* rcvr);
+/**
+ * Remove an already registered receiver.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param rcvr Receiver structure to deregister.
+ * @return COMMS_SUCCESS if receiver has been removed and can be recycled.
+ */
+comms_error_t comms_deregister_recv (comms_layer_t * comms, comms_receiver_t * rcvr);
 
 // Snoopers don't look at the type (amid)
-comms_error_t comms_register_snooper(comms_layer_t* comms, comms_receiver_t* rcvr, comms_receive_f* func, void *user);
 
-// Remove an already registered snooper.
-comms_error_t comms_deregister_snooper(comms_layer_t* comms, comms_receiver_t* rcvr);
+/**
+ * Register to snoop for messages:
+ *  All messages, regardless of AMID.
+ *  All destinations, if underlying device is in promiscuous mode.
+ *
+ * Must pass an unused comms_receiver_t object, guaranteeing that the
+ * memory remains allocated and is not used elsewhere until deregister is called.
+ *
+ * One receiver object may not be used in multiple roles at the same time
+ *
+ * The same receive function may be registered several times with different
+ * conditions and/or with a different user pointer.
+ *
+ * Multiple receivers may be registered for the same packet type, the message will
+ * be delivered to all receivers.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param rcvr Receiver structure.
+ * @param func The receive function to call when a packet is received.
+ * @param user User pointer to be passed to the receive function on packet reception.
+ */
+comms_error_t comms_register_snooper (comms_layer_t * comms,
+                                      comms_receiver_t * rcvr,
+                                      comms_receive_f * func, void * user);
+
+/**
+ * Remove an already registered snooper.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param rcvr Receiver structure to deregister.
+ * @return COMMS_SUCCESS if receiver has been removed and can be recycled.
+ */
+comms_error_t comms_deregister_snooper (comms_layer_t * comms, comms_receiver_t * rcvr);
 
 // -----------------------------------------------------------------------------
 
 // Packet type -----------------------------------------------------------------
-am_id_t comms_get_packet_type(comms_layer_t* comms, const comms_msg_t* msg);
-void comms_set_packet_type(comms_layer_t* comms, comms_msg_t* msg, am_id_t ptype);
+// TODO explain the AM ID logic
+
+/**
+ * Get the packet type (AM ID - Active Message ID) of the message.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param msg Pointer to a message.
+ * @return Packet type (AM ID).
+ **/
+am_id_t comms_get_packet_type (comms_layer_t * comms, const comms_msg_t * msg);
+
+/**
+ * Set the packet type (AM ID - Active Message ID) of the message.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param msg Pointer to a message.
+ * @param ptype The type.
+ **/
+void comms_set_packet_type (comms_layer_t * comms, comms_msg_t * msg, am_id_t ptype);
 // -----------------------------------------------------------------------------
 
 // Packet group (PAN ID, AM group, etc) ----------------------------------------
+// TODO explain the AM group/PAN-ID logic
+
+/**
+ * Get the packet group (AM group / PAN ID) of the message.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param msg Pointer to a message.
+ * @return Packet group (PAN ID).
+ **/
 uint16_t comms_get_packet_group(comms_layer_t* comms, const comms_msg_t* msg);
+
+/**
+ * Set the packet group (AM group / PAN ID) of the message.
+ *
+ * @param comms Pointer to a comms layer.
+ * @param msg Pointer to a message.
+ * @param group Packet group (PAN ID).
+ **/
 void comms_set_packet_group(comms_layer_t* comms, comms_msg_t* msg, uint16_t group);
 // -----------------------------------------------------------------------------
 
@@ -379,4 +514,4 @@ void comms_mutex_release(commsMutexId_t mutex);
 // -----------------------------------------------------------------------------
 #include "mist_comm_private.h"
 
-#endif//MIST_COMM_H_
+#endif//MIST_COMM_H
