@@ -130,6 +130,7 @@ comms_error_t comms_basic_deliver(comms_layer_t* layer, comms_msg_t* msg) {
 comms_error_t comms_initialize_rcvr_management(comms_layer_iface_t* comms) {
 	comms_mutex_acquire(comms->receiver_mutex);
 	comms->receivers = NULL;
+	comms->snoopers = NULL;
 	comms->register_recv = &rcv_comms_register_recv;
 	comms->deregister_recv = &rcv_comms_deregister_recv;
 	comms->register_snooper = &rcv_comms_register_snooper;
