@@ -10,21 +10,21 @@
 #include "mist_comm_private.h"
 
 static volatile bool m_mutexes[8];
-static int m_mutex_count = 0;
+static intptr_t m_mutex_count = 0;
 
 void comms_mutex_acquire(commsMutexId_t mutex)
 {
-	while(m_mutexes[mutex]);
-	m_mutexes[mutex] = true;
+	while(m_mutexes[(intptr_t)mutex]);
+	m_mutexes[(intptr_t)mutex] = true;
 }
 
 void comms_mutex_release(commsMutexId_t mutex)
 {
-	m_mutexes[mutex] = false;
+	m_mutexes[(intptr_t)mutex] = false;
 }
 
-commsMutexId_t comms_mutex_create()
+commsMutexId_t comms_mutex_create(void)
 {
 	m_mutexes[m_mutex_count] = false;
-	return m_mutex_count++;
+	return (commsMutexId_t)m_mutex_count++;
 }
