@@ -11,6 +11,8 @@
 
 #include "cmsis_os2.h"
 
+#define RADIO_TOS_MAX_PAYLOAD_LENGTH 114
+
 static comms_layer_am_t m_radio_iface;
 
 static osThreadId_t m_thread;
@@ -59,12 +61,16 @@ static void mock_radio_loop (void * arg)
 	}
 }
 
+static uint8_t radio_max_length (comms_layer_iface_t * iface)
+{
+    return RADIO_TOS_MAX_PAYLOAD_LENGTH;
+}
 
 comms_layer_t * mist_mock_cmsis_radio_init (am_addr_t address, comms_send_f * send_copy)
 {
 	mf_send_copy = send_copy;
 
-	comms_am_create((comms_layer_t *)&m_radio_iface, address, radio_send, NULL, NULL);
+	comms_am_create((comms_layer_t *)&m_radio_iface, address, radio_send, radio_max_length, NULL, NULL);
 
 	m_mutex = osMutexNew(NULL);
 
