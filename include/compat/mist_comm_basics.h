@@ -1,3 +1,9 @@
+/**
+ * Reference basic variables definition.
+ *
+ * Copyright Thinnect Inc. 2021
+ * @license MIT
+ */
 #ifndef MIST_COMM_BASICS_H
 #define MIST_COMM_BASICS_H
 

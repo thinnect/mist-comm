@@ -34,7 +34,7 @@
  *
  * @return true if API and library version matches, config appears correct.
  */
-inline bool comms_verify_api (void);
+inline bool comms_verify_api (void) __attribute__((always_inline));
 
 // -----------------------------------------------------------------------------
 // Result and status values ----------------------------------------------------

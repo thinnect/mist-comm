@@ -2,7 +2,7 @@
 
 Mist communications APIs, abstractions for various communication interfaces.
 
-# Features
+## Features
 
 The Mist Communication API abstracts the specifics of different communication
 implementations from the higher layers. Applications can use
@@ -15,7 +15,7 @@ communication flows, it is usually not necessary to be aware of what the actual
 underlying communications technology is.
 
 
-# Included implementations
+## Included implementations
 
 The mist-comm library contains an adapter for adding the mist-comm API to
 radio layers. This is used by the 802.15.4 implementations in
@@ -31,9 +31,9 @@ set up a basic communications flow without an OS using for example
 [radio_basic.c](https://github.com/thinnect/node-platform/blob/master/silabs/radio_basic.c).
 
 
-# Addresses and identifiers
+## Addresses and identifiers
 
-## Addressing
+### Addressing
 
 Messages are ideally addressed using the endpoint IEEE EUI-64 addresses, however,
 the actual address structure is a composite of a global and a local address,
@@ -41,7 +41,7 @@ since the mist-comm API is mostly used on embedded devices and over communicatio
 interfaces where it is necessary to map interface-specific addresses and global
 identities.
 
-## Packet type - Active Message ID (AMID)
+### Packet type - Active Message ID (AMID)
 
 The Mist AMID concept derives from the TinyOS Active Message ID, which is an
 8-bit value. On the cloud side this has been extended to include the
@@ -50,7 +50,7 @@ of the 16-bit space in the future, as other protocols and tools are extended.
 The mist-comm API currently uses the 8-bit value, a future version may move to
 the full 16-bit identifier.
 
-## Packet group - Active Message Group / PAN ID
+### Packet group - Active Message Group / PAN ID
 
 The Mist Group ID concept derives from the TinyOS Active Message Group ID,
 which itself relies on the 802.15.4 PAN ID, however, exposes only 8-bits of the
@@ -59,9 +59,9 @@ high-byte currently needs to be 0, because the serial protocol only transfers
 the lower 8 bits.
 
 
-# Setting up a communications layer
+## Setting up a communications layer
 
-## Initialization
+### Initialization
 
 Initializing a communications layer is usually a simple as calling the init or
 setup function of a specific communications layer. A pointer to the layer is
@@ -86,7 +86,7 @@ to be called or a sleep-block to be applied to actually start it. `comms_status`
 can be used to check the status.
 
 
-## Creation
+### Creation
 
 The mist-comm interface structure (`comms_layer_iface_t`) carries function
 pointers for packet manipulation and messaging tasks. These functions are
@@ -108,7 +108,7 @@ of some incompatibilities, if static communications libraries are being linked
 together.
 
 
-# Sending a message
+## Sending a message
 
 Before using a `comms_msg_t` structure, it must be initialized for the layer
 that it is going to be used with. This will clear all the contents and may
@@ -179,7 +179,7 @@ as it is usually fired from the communication layer thread and holding it up may
 cause subsequent packets to be dropped.
 
 
-# Receiving a message
+## Receiving a message
 
 Receiving a message requires registering a receiver and a receive function.
 A regular receiver will pass a message to the receive function when the type (AM ID)
@@ -226,7 +226,7 @@ static void receive_message (comms_layer_t * p_comms, const comms_msg_t * p_msg,
 ```
 
 
-# Addressing
+## Addressing
 
 The message sending example above uses global EUI64 addressing when sending the
 message. In this case, the sender is starting with a blank `comms_address_t`
@@ -255,7 +255,7 @@ that needs it.
 ```
 
 
-# Message pool
+## Message pool
 
 An allocated `comms_msg_t` structure is necessary for sending a message. In many
 cases components can declare the message statically, but for many other components,
@@ -305,7 +305,7 @@ void custom_component_function (void)
 ```
 
 
-# Communications layer sleep management
+## Communications layer sleep management
 
 A communications layer may be always on (started after init) or switched either
 by calling `comms_start` and `comms_stop` or through sleep controllers.
@@ -343,7 +343,7 @@ comms_register_sleep_controller(p_comms, &m_sleep_ctrl, radio_start_done, NULL);
 ```
 
 
-# Timestamps
+## Timestamps
 
 Received messages are timestamped as they arrive, transmitted messages are
 timestamped when sent out and the timestamp can be inspected in the send-done
@@ -357,13 +357,13 @@ different granularity.
 **Timestamping features depend on the capabilities of the underlying
 implementation and may not be supported for all communications layers!**
 
-## Message timestamps
+### Message timestamps
 
 Message timestamps can be read with the combination of `comms_timestamp_valid`
 and `comms_get_timestamp_micro`. It is up to the user to know if the message
 was received or sent, to know if they are getting an RX or TX timestamp.
 
-## Event timestamps
+### Event timestamps
 
 Event timestamps are set with the `comms_set_event_time_micro` function and
 on reception, can be checked with `comms_event_time_valid` and `comms_get_event_time_micro`.

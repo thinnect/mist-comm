@@ -11,6 +11,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_major_, MIST_COMM_VERSION_MAJOR);
+volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_minor_, MIST_COMM_VERSION_MINOR);
+
 static void comms_status_change_callback(comms_layer_t* comms, comms_status_t status, void* user) {
 	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 

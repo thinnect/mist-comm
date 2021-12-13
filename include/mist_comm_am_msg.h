@@ -1,3 +1,9 @@
+/**
+ * Mist communications API TinyOS ActiveMessage message structure.
+ *
+ * Copyright Thinnect Inc. 2021
+ * @license MIT
+ */
 #ifndef MIST_COMM_AM_MSG_H
 #define MIST_COMM_AM_MSG_H
 

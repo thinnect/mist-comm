@@ -1,3 +1,9 @@
+/**
+ * Mist communications interface structure.
+ *
+ * Copyright Thinnect Inc. 2021
+ * @license MIT
+ */
 #ifndef MIST_COMM_IFACE_H
 #define MIST_COMM_IFACE_H
 

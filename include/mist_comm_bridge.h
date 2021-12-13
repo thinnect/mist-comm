@@ -6,7 +6,6 @@
  * @license MIT
  * @author Raido Pahtma
  */
-
 #ifndef MIST_COMM_BRIDGE_H
 #define MIST_COMM_BRIDGE_H
 
