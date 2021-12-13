@@ -3,8 +3,7 @@
 *
 * Many instances can be created, each needs a serial_protocol.
 *
-* Copyright Thinnect Inc. 2020
-* @author Raido Pahtma
+* Copyright Thinnect Inc. 2021
 * @license MIT
 */
 #ifndef SERIAL_BASICMESSAGE_H_

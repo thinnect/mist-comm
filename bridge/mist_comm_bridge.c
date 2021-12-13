@@ -2,7 +2,7 @@
  * MistComm bridge implementation.
  * Bridge messages between 2 mist-comm communication interfaces.
  *
- * Copyright Thinnect Inc. 2019
+ * Copyright Thinnect Inc. 2021
  * @license MIT
  */
 

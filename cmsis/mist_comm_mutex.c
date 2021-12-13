@@ -1,9 +1,8 @@
 /**
  * MistComm locking implementation with CMSIS mutexes.
  *
- * Copyright Thinnect Inc. 2019
+ * Copyright Thinnect Inc. 2021
  * @license MIT
- * @author Raido Pahtma
  */
 
 #include "mist_comm_iface.h"
@@ -12,17 +11,17 @@
 
 static const osMutexAttr_t attr = {"comms", osMutexPrioInherit, NULL, 0U};
 
-void comms_mutex_acquire(commsMutexId_t mutex)
+void comms_mutex_acquire (commsMutexId_t mutex)
 {
 	while(osOK != osMutexAcquire((osMutexId_t)(mutex), osWaitForever));
 }
 
-void comms_mutex_release(commsMutexId_t mutex)
+void comms_mutex_release (commsMutexId_t mutex)
 {
 	osMutexRelease((osMutexId_t)mutex);
 }
 
-commsMutexId_t comms_mutex_create()
+commsMutexId_t comms_mutex_create (void)
 {
 	return (commsMutexId_t)osMutexNew(&attr);
 }

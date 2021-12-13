@@ -1,7 +1,7 @@
 /**
  * Unit-Tests for the MistComm start-stop functionality.
  *
- * Copyright Thinnect Inc. 2019
+ * Copyright Thinnect Inc. 2021
  * @license MIT
  */
 

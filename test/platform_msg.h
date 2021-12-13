@@ -1,5 +1,5 @@
-#ifndef PLATFORM_MSG_H_
-#define PLATFORM_MSG_H_
+#ifndef PLATFORM_MSG_H
+#define PLATFORM_MSG_H
 
 #include "mist_comm_am_msg.h"
 
@@ -9,4 +9,4 @@
 #define COMMS_MSG_FOOTER_SIZE 0
 #define COMMS_MSG_METADATA_SIZE sizeof(comms_am_msg_metadata_t)
 
-#endif//PLATFORM_MSG_H_
+#endif//PLATFORM_MSG_H

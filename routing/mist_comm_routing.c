@@ -1,10 +1,8 @@
 /**
  * Routing info callback handlers for the MistComm API.
  *
- * Copyright Thinnect Inc. 2019
- *
+ * Copyright Thinnect Inc. 2021
  * @license MIT
- * @author Raido Pahtma
  */
 
 #include "mist_comm_routing.h"

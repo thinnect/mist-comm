@@ -1,7 +1,7 @@
 /**
  * MistComm locking with mock mutexes.
  *
- * Copyright Thinnect Inc. 2020
+ * Copyright Thinnect Inc. 2021
  * @license MIT
  */
 #ifndef MIST_COMM_MUTEX_H

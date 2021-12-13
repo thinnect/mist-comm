@@ -2,7 +2,7 @@
  * MistComm mock radio layer.
  * Exports outgoing messages, giving send done events to users.
  *
- * Copyright Thinnect Inc. 2020
+ * Copyright Thinnect Inc. 2021
  * @license MIT
  */
 #ifndef MIST_MOCK_RADIO_CMSIS_H

@@ -7,7 +7,7 @@
  * discover the EUI64 address.
  * A broadcast message with the guid field set to all ones is forbidden.
  *
- * Copyright Thinnect Inc. 2020
+ * Copyright Thinnect Inc. 2021
  * @license MIT
  */
 #ifndef MIST_COMM_AM_ADDRDISCO_PROTOCOL_H_

@@ -2,7 +2,7 @@
  * EUI and link-local address discovery implementation for
  * the TinyOS ActiveMessage transport layer.
  *
- * Copyright Thinnect Inc. 2020
+ * Copyright Thinnect Inc. 2021
  * @license MIT
  */
 

@@ -1,8 +1,7 @@
 /**
  * Sleep controller implementation.
  *
- * Copyright Thinnect Inc. 2019
- * @author Raido Pahtma
+ * Copyright Thinnect Inc. 2021
  * @license MIT
  */
 
@@ -14,23 +13,23 @@
 #define __LOG_LEVEL__ (LOG_LEVEL_mist_comm_controller & BASE_LOG_LEVEL)
 #include "log.h"
 
-static bool unsafe_update_state(comms_layer_t * comms);
-static bool unsafe_service_callbacks(comms_layer_t * comms, comms_status_t status);
+static bool unsafe_update_state (comms_layer_t * comms);
+static bool unsafe_service_callbacks (comms_layer_t * comms, comms_status_t status);
 
-static void status_change_callback(comms_layer_t * comms, comms_status_t status, void * user)
+static void status_change_callback (comms_layer_t * comms, comms_status_t status, void * user)
 {
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 	bool ok;
 	comms_mutex_acquire(cl->controller_mutex);
 	ok = unsafe_service_callbacks(comms, status);
 	comms_mutex_release(cl->controller_mutex);
-	if (!ok)
+	if ( ! ok)
 	{
 		_comms_defer(cl->sleep_controller_deferred);
 	}
 }
 
-static void deferred_callback(void * arg)
+static void deferred_callback (void * arg)
 {
 	comms_layer_t * comms = (comms_layer_t*)arg;
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
@@ -38,7 +37,7 @@ static void deferred_callback(void * arg)
 	comms_mutex_acquire(cl->controller_mutex);
 	ok = unsafe_update_state(comms);
 	comms_mutex_release(cl->controller_mutex);
-	if (!ok)
+	if ( ! ok)
 	{
 		_comms_defer(cl->sleep_controller_deferred);
 	}
@@ -49,7 +48,7 @@ static void deferred_callback(void * arg)
  *
  * @return true if current state is good, false if state needs to be changed.
  */
-static bool unsafe_service_callbacks(comms_layer_t * comms, comms_status_t status)
+static bool unsafe_service_callbacks (comms_layer_t * comms, comms_status_t status)
 {
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 	comms_sleep_controller_t** indirect;
@@ -83,7 +82,7 @@ static bool unsafe_service_callbacks(comms_layer_t * comms, comms_status_t statu
  *
  * @return true if current state is good, false if state needs to be changed.
  */
-static bool unsafe_update_state(comms_layer_t * comms)
+static bool unsafe_update_state (comms_layer_t * comms)
 {
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 	comms_status_t status = comms_status(comms);
@@ -114,8 +113,8 @@ static bool unsafe_update_state(comms_layer_t * comms)
 	return true;
 }
 
-comms_error_t comms_register_sleep_controller(comms_layer_t * comms, comms_sleep_controller_t * ctrl,
-                                              comms_status_change_f * start_done, void * user)
+comms_error_t comms_register_sleep_controller (comms_layer_t * comms, comms_sleep_controller_t * ctrl,
+                                               comms_status_change_f * start_done, void * user)
 {
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 	comms_error_t err = COMMS_SUCCESS;
@@ -154,7 +153,7 @@ comms_error_t comms_register_sleep_controller(comms_layer_t * comms, comms_sleep
 	return err;
 }
 
-comms_error_t comms_deregister_sleep_controller(comms_layer_t * comms, comms_sleep_controller_t * ctrl)
+comms_error_t comms_deregister_sleep_controller (comms_layer_t * comms, comms_sleep_controller_t * ctrl)
 {
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)comms;
 	comms_error_t err = COMMS_FAIL;
@@ -185,7 +184,7 @@ comms_error_t comms_deregister_sleep_controller(comms_layer_t * comms, comms_sle
 }
 
 // Block may be asynchronous, wakeup may take time, or EALREADY may be returned
-comms_error_t comms_sleep_block(comms_sleep_controller_t * ctrl)
+comms_error_t comms_sleep_block (comms_sleep_controller_t * ctrl)
 {
 	comms_error_t err = COMMS_EINVAL;
 	if ((NULL != ctrl)&&(NULL != ctrl->comms))
@@ -226,7 +225,7 @@ comms_error_t comms_sleep_block(comms_sleep_controller_t * ctrl)
 }
 
 // Allow is synchronous, sleep is not guaranteed, but block is released immediately
-comms_error_t comms_sleep_allow(comms_sleep_controller_t * ctrl)
+comms_error_t comms_sleep_allow (comms_sleep_controller_t * ctrl)
 {
 	comms_error_t err = COMMS_EINVAL;
 	if ((NULL != ctrl)&&(NULL != ctrl->comms))
@@ -257,7 +256,7 @@ comms_error_t comms_sleep_allow(comms_sleep_controller_t * ctrl)
 	return err;
 }
 
-bool comms_sleep_blocked(comms_sleep_controller_t * ctrl)
+bool comms_sleep_blocked (comms_sleep_controller_t * ctrl)
 {
 	comms_layer_iface_t * cl = (comms_layer_iface_t*)(ctrl->comms);
 	bool blocked;

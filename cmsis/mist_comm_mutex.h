@@ -1,9 +1,8 @@
 /**
  * MistComm locking with CMSIS mutexes.
  *
- * Copyright Thinnect Inc. 2020
+ * Copyright Thinnect Inc. 2021
  * @license MIT
- * @author Raido Pahtma
  */
 #ifndef MIST_COMM_MUTEX_H
 #define MIST_COMM_MUTEX_H

@@ -2,9 +2,8 @@
  * MistComm bridge.
  * Bridge messages between 2 mist-comm communication interfaces.
  *
- * Copyright Thinnect Inc. 2019
+ * Copyright Thinnect Inc. 2021
  * @license MIT
- * @author Raido Pahtma
  */
 #ifndef MIST_COMM_BRIDGE_H
 #define MIST_COMM_BRIDGE_H
