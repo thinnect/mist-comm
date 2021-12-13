@@ -4,7 +4,7 @@
  * fragment need to be of this size, the last one can be shorter.
  * Maximum number of fragments is 8, maximum data size is 255 bytes.
  *
- * @author Raido Pahtma
+ * Copyright Thinnect Inc. 2020
  * @license MIT
  */
 #include "fragmenter_assembler.h"

@@ -1,5 +1,5 @@
-#ifndef MIST_COMM_BASICS
-#define MIST_COMM_BASICS
+#ifndef MIST_COMM_BASICS_H
+#define MIST_COMM_BASICS_H
 
 #include "AM.h"
 #include "IeeeEui64.h"
@@ -12,4 +12,4 @@
 //} ieee_eui64_t;
 // ??? this should come from some ieee_eui64.h header
 
-#endif//MIST_COMM_BASICS
+#endif//MIST_COMM_BASICS_H

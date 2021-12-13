@@ -1,5 +1,5 @@
-#ifndef MIST_COMM_IFACE_H_
-#define MIST_COMM_IFACE_H_
+#ifndef MIST_COMM_IFACE_H
+#define MIST_COMM_IFACE_H
 
 #include "mist_comm.h"
 
@@ -46,7 +46,7 @@ typedef bool comms_is_ack_required_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef comms_error_t comms_set_ack_required_f(comms_layer_iface_t*, comms_msg_t*, bool);
 
 typedef bool comms_ack_received_f(comms_layer_iface_t*, const comms_msg_t*);
-typedef void comms_set_ack_received_f(comms_layer_iface_t*, comms_msg_t*);
+typedef void comms_set_ack_received_f(comms_layer_iface_t*, comms_msg_t*, bool);
 
 typedef comms_error_t comms_set_timestamp_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
 typedef uint32_t comms_get_timestamp_f(comms_layer_iface_t*, const comms_msg_t*);
@@ -145,4 +145,4 @@ struct comms_layer_iface {
 	commsMutexId_t receiver_mutex;
 };
 
-#endif//MIST_COMM_IFACE_H_
+#endif//MIST_COMM_IFACE_H

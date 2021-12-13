@@ -1,3 +1,10 @@
+/**
+ * Mist communications API.
+ *
+ * Copyright Thinnect Inc. 2021
+ * @license MIT
+ */
+
 #include "mist_comm.h"
 #include "mist_comm_iface.h"
 
@@ -282,21 +289,21 @@ bool comms_ack_received(comms_layer_t* comms, const comms_msg_t* msg) {
 	}
 	return false;
 }
-void _comms_set_ack_received(comms_layer_t* comms, comms_msg_t* msg) {
+void comms_set_ack_received(comms_layer_t* comms, comms_msg_t* msg, bool received) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
-		cl->set_ack_received(cl, msg);
+		cl->set_ack_received(cl, msg, received);
 	}
 }
 
-comms_error_t comms_set_timestamp(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp) {
+comms_error_t comms_set_timestamp_micro(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->set_timestamp(cl, msg, timestamp);
 	}
 	return COMMS_EINVAL;
 }
-uint32_t comms_get_timestamp(comms_layer_t* comms, const comms_msg_t* msg) {
+uint32_t comms_get_timestamp_micro(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_timestamp(cl, msg);
@@ -311,20 +318,21 @@ bool comms_timestamp_valid(comms_layer_t* comms, const comms_msg_t* msg) {
 	return false;
 }
 
-comms_error_t comms_set_event_time(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt) {
+comms_error_t comms_set_event_time_micro(comms_layer_t* comms, comms_msg_t* msg, uint32_t evt) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->set_event_time(cl, msg, evt);
 	}
 	return COMMS_EINVAL;
 }
-uint32_t comms_get_event_time(comms_layer_t* comms, const comms_msg_t* msg) {
+uint32_t comms_get_event_time_micro(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		return cl->get_event_time(cl, msg);
 	}
 	return 0;
 }
+
 bool comms_event_time_valid(comms_layer_t* comms, const comms_msg_t* msg) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
@@ -340,7 +348,7 @@ uint8_t comms_get_lqi(comms_layer_t* comms, const comms_msg_t* msg) {
 	}
 	return 0;
 }
-void _comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi) {
+void comms_set_lqi(comms_layer_t* comms, comms_msg_t* msg, uint8_t lqi) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		cl->set_lqi(cl, msg, lqi);
@@ -354,7 +362,7 @@ int8_t comms_get_rssi(comms_layer_t* comms, const comms_msg_t* msg) {
 	}
 	return -128;
 }
-void _comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi) {
+void comms_set_rssi(comms_layer_t* comms, comms_msg_t* msg, int8_t rssi) {
 	if((msg != NULL)&&(comms != NULL)) {
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		cl->set_rssi(cl, msg, rssi);

@@ -7,8 +7,8 @@
  * @author Raido Pahtma
  */
 
-#ifndef MIST_COMM_BRIDGE_H_
-#define MIST_COMM_BRIDGE_H_
+#ifndef MIST_COMM_BRIDGE_H
+#define MIST_COMM_BRIDGE_H
 
 #include "cmsis_os2.h"
 #include "mist_comm.h"
@@ -52,4 +52,4 @@ comms_error_t comms_bridge_init (comms_bridge_t * bridge,
  */
 void comms_bridge_deinit (comms_bridge_t * bridge);
 
-#endif//MIST_COMM_BRIDGE_H_
+#endif//MIST_COMM_BRIDGE_H

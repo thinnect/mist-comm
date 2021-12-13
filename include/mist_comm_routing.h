@@ -1,11 +1,11 @@
 /**
  * Routing info callbacks for the MistComm API.
  *
- * Copyright Thinnect Inc. 2019
- *
+ * Copyright Thinnect Inc. 2021
  * @license MIT
- * @author Raido Pahtma
  */
+#ifndef MIST_COMM_ROUTING_H
+#define MIST_COMM_ROUTING_H
 
 #include "mist_comm_am.h"
 #include <string.h>
@@ -37,3 +37,5 @@ struct comms_layer_am_mh {
 	comms_layer_am_t base;
 	comms_routing_info_handler_t * routing_info_handlers;
 };
+
+#endif//MIST_COMM_ROUTING_H

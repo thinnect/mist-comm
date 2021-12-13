@@ -1,5 +1,11 @@
-#ifndef MIST_COMM_AM_H_
-#define MIST_COMM_AM_H_
+/**
+ * Mist communications API for TinyOS ActiveMessage.
+ *
+ * Copyright Thinnect Inc. 2021
+ * @license MIT
+ */
+#ifndef MIST_COMM_AM_H
+#define MIST_COMM_AM_H
 
 #include "mist_comm.h"
 #include "mist_comm_iface.h"
@@ -55,4 +61,4 @@ comms_error_t comms_am_create(comms_layer_t* layer, am_addr_t address,
                               comms_start_f* startf, comms_stop_f* stopf);
 // -----------------------------------------------------------------------------
 
-#endif//MIST_COMM_AM_H_
+#endif//MIST_COMM_AM_H

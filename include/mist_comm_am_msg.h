@@ -1,5 +1,5 @@
-#ifndef MIST_COMM_AM_MSG_H_
-#define MIST_COMM_AM_MSG_H_
+#ifndef MIST_COMM_AM_MSG_H
+#define MIST_COMM_AM_MSG_H
 
 #include "mist_comm_basics.h"
 
@@ -30,4 +30,4 @@ typedef struct comms_am_msg_metadata {
 	uint8_t priority;
 }__attribute__((packed))comms_am_msg_metadata_t;
 
-#endif//MIST_COMM_AM_H_
+#endif//MIST_COMM_AM_MSG_H

@@ -1,9 +1,45 @@
-#ifndef MIST_COMM_PRIVATE_H_
-#define MIST_COMM_PRIVATE_H_
+/**
+ * Mist communications API details.
+ *
+ * Copyright Thinnect Inc. 2021
+ * @license MIT
+ */
+#ifndef MIST_COMM_PRIVATE_H
+#define MIST_COMM_PRIVATE_H
 
 #include "mist_comm.h"
 
+// -----------------------------------------------------------------------------
+// API version checking --------------------------------------------------------
+// -----------------------------------------------------------------------------
+
+/**
+ * Version check. Headers will check against major and minor variables that
+ * have the version number in the name. So if there is a version mismatch,
+ * it will cause linking to fail, because the variables will not be found.
+ */
+
+#define MIST_COMM_VERSION_PASTER(x, y) x##y
+
+extern volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_major_, MIST_COMM_VERSION_MAJOR);
+extern volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_minor_, MIST_COMM_VERSION_MINOR);
+
+inline bool comms_verify_api (void)
+{
+	if (MIST_COMM_VERSION_MAJOR != MIST_COMM_VERSION_PASTER(g_mist_comm_version_major_, MIST_COMM_VERSION_MAJOR))
+	{
+		return false;
+	}
+	if (MIST_COMM_VERSION_MINOR != MIST_COMM_VERSION_PASTER(g_mist_comm_version_minor_, MIST_COMM_VERSION_MINOR))
+	{
+		return false;
+	}
+	return true;
+}
+
+// -----------------------------------------------------------------------------
 // Message structure -----------------------------------------------------------
+// -----------------------------------------------------------------------------
 struct comms_msg {
 	struct {
 		uint16_t type; // 0x3F00 + AMID
@@ -23,36 +59,42 @@ struct comms_msg {
 	} __attribute__((packed)) body;
 };
 
+// -----------------------------------------------------------------------------
 // Receiver structure ----------------------------------------------------------
+// -----------------------------------------------------------------------------
 struct comms_receiver { // Members are private, should not be accessed
-	am_id_t           type;
-	comms_receive_f*  callback;
-	void*             user;
-	bool              eui;
-	comms_receiver_t* next;
+	am_id_t            type;
+	comms_receive_f *  callback;
+	void *             user;
+	bool               eui;
+	comms_receiver_t * next;
 };
 
+// -----------------------------------------------------------------------------
 // Sleep controller structure --------------------------------------------------
+// -----------------------------------------------------------------------------
 struct comms_sleep_controller {
-	comms_layer_t* comms;
+	comms_layer_t * comms;
 
 	bool block;
 	bool pending;
 
-	comms_status_change_f* cb;
-	void* user;
+	comms_status_change_f * cb;
+	void * user;
 
-	comms_sleep_controller_t* next;
+	comms_sleep_controller_t * next;
 };
 
+// -----------------------------------------------------------------------------
 // Deferred calls --------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-typedef void comms_deferred_f(void * argument);
+typedef void comms_deferred_f (void * argument);
 
-void _comms_deferred_init(comms_layer_t * comms, void ** deferred, comms_deferred_f * cb);
+void _comms_deferred_init (comms_layer_t * comms, void ** deferred, comms_deferred_f * cb);
 
-void _comms_defer(void * deferred);
+void _comms_defer (void * deferred);
 
-void _comms_deferred_deinit(void * deferred);
+void _comms_deferred_deinit (void * deferred);
 
-#endif//MIST_COMM_PRIVATE_H_
+#endif//MIST_COMM_PRIVATE_H

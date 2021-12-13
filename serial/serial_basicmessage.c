@@ -30,9 +30,14 @@ static bool serial_bm_receive(uint8_t dspch, const uint8_t data[], uint8_t lengt
 static void serial_bm_senddone(uint8_t dspch, const uint8_t data[], uint8_t length, bool acked, void* user);
 static void serial_bm_timer_cb(void * argument);
 
-comms_layer_t* serial_basicmessage_init (serial_basicmessage_t * sbm, serial_protocol_t * spr,
-                                         uint8_t dispatch, am_id_t amid)
+comms_layer_t * serial_basicmessage_init (serial_basicmessage_t * sbm, serial_protocol_t * spr,
+                                          uint8_t dispatch, am_id_t amid)
 {
+	if ( ! comms_verify_api())
+	{
+		return NULL;
+	}
+
 	sbm->mutex = osMutexNew(NULL);
 	sbm->timer = osTimerNew(&serial_bm_timer_cb, osTimerOnce, sbm, NULL);
 
@@ -135,10 +140,7 @@ static void serial_bm_senddone(uint8_t dispatch, const uint8_t data[], uint8_t l
 
 	// Set flags on the message that was just sent
 	//comms_set_timestamp(lyr, sbm->sending->msg, now());
-	if (acked)
-	{
-		_comms_set_ack_received(lyr, sbm->sending->msg);
-	}
+	comms_set_ack_received(lyr, sbm->sending->msg, acked);
 
 	// Signal send done events
 	sbm->sending->send_done(lyr, sbm->sending->msg, COMMS_SUCCESS, sbm->sending->user);

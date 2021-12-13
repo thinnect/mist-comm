@@ -5,11 +5,11 @@
  * @license MIT
  * @author Raido Pahtma
  */
-#ifndef MIST_COMM_MUTEX_H_
-#define MIST_COMM_MUTEX_H_
+#ifndef MIST_COMM_MUTEX_H
+#define MIST_COMM_MUTEX_H
 
 #include "cmsis_os2.h"
 
 typedef osMutexId_t commsMutexId_t;
 
-#endif//MIST_COMM_MUTEX_H_
+#endif//MIST_COMM_MUTEX_H

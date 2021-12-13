@@ -5,8 +5,8 @@
  * Copyright Thinnect Inc. 2020
  * @license MIT
  */
-#ifndef MIST_MOCK_RADIO_CMSIS_H_
-#define MIST_MOCK_RADIO_CMSIS_H_
+#ifndef MIST_MOCK_RADIO_CMSIS_H
+#define MIST_MOCK_RADIO_CMSIS_H
 
 #include "mist_comm_am.h"
 
@@ -18,4 +18,4 @@
  */
 comms_layer_t * mist_mock_cmsis_radio_init (am_addr_t address, comms_send_f * send_copy);
 
-#endif//MIST_MOCK_RADIO_CMSIS_H_
+#endif//MIST_MOCK_RADIO_CMSIS_H

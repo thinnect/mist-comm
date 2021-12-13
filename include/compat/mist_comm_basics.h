@@ -1,5 +1,5 @@
-#ifndef MIST_COMM_BASICS
-#define MIST_COMM_BASICS
+#ifndef MIST_COMM_BASICS_H
+#define MIST_COMM_BASICS_H
 
 #include <stdint.h>
 
@@ -13,4 +13,4 @@ typedef uint16_t nx_am_addr_t;
 
 #define AM_BROADCAST_ADDR ((uint16_t)0xFFFF)
 
-#endif//MIST_COMM_BASICS
+#endif//MIST_COMM_BASICS_H

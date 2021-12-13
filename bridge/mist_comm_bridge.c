@@ -4,7 +4,6 @@
  *
  * Copyright Thinnect Inc. 2019
  * @license MIT
- * @author Raido Pahtma
  */
 
 #include <inttypes.h>

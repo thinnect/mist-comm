@@ -3,11 +3,10 @@
  *
  * Copyright Thinnect Inc. 2020
  * @license MIT
- * @author Raido Pahtma
  */
-#ifndef MIST_COMM_MUTEX_H_
-#define MIST_COMM_MUTEX_H_
+#ifndef MIST_COMM_MUTEX_H
+#define MIST_COMM_MUTEX_H
 
 typedef int commsMutexId_t;
 
-#endif//MIST_COMM_MUTEX_H_
+#endif//MIST_COMM_MUTEX_H

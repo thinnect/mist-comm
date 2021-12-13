@@ -45,8 +45,13 @@ static bool serial_am_receive(uint8_t dspch, const uint8_t data[], uint8_t lengt
 static void serial_am_senddone(uint8_t dspch, const uint8_t data[], uint8_t length, bool acked, void* user);
 static void serial_am_timer_cb(void * argument);
 
-comms_layer_t* serial_activemessage_init (serial_activemessage_t* sam, serial_protocol_t * spr, uint16_t pan_id, uint16_t address)
+comms_layer_t * serial_activemessage_init (serial_activemessage_t* sam, serial_protocol_t * spr, uint16_t pan_id, uint16_t address)
 {
+	if ( ! comms_verify_api())
+	{
+		return NULL;
+	}
+
 	sam->mutex = osMutexNew(NULL);
 	sam->timer = osTimerNew(&serial_am_timer_cb, osTimerOnce, sam, NULL);
 
@@ -224,10 +229,7 @@ static void serial_am_senddone(uint8_t dispatch, const uint8_t data[], uint8_t l
 
 	// Set flags on the message that was just sent
 	//comms_set_timestamp(lyr, sam->sending->msg, now());
-	if (acked)
-	{
-		_comms_set_ack_received(lyr, sam->sending->msg);
-	}
+	comms_set_ack_received(lyr, sam->sending->msg, acked);
 
 	// Signal send done events
 	sam->sending->send_done(lyr, sam->sending->msg, COMMS_SUCCESS, sam->sending->user);
