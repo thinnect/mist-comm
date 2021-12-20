@@ -64,6 +64,7 @@ comms_layer_t * serial_basicmessage_init (serial_basicmessage_t * sbm, serial_pr
 	// TODO start-stop handlers
 	comms_am_create((comms_layer_t *)sbm, 0,
 	                &serial_basicmessage_send, &serial_basicmessage_max_length,
+	                NULL,
 	                NULL, NULL);
 
 	// serial_basicmessage_t is a semi-valid comms_layer_t

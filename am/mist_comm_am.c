@@ -342,6 +342,7 @@ void comms_am_set_source (comms_layer_t * comms, comms_msg_t * msg, am_addr_t so
 
 comms_error_t comms_am_create (comms_layer_t * layer, am_addr_t address,
                                comms_send_f * sendf, comms_plen_f * plenf,
+                               comms_get_time_micro_f * gtmf,
                                comms_start_f * startf, comms_stop_f * stopf)
 {
 
@@ -391,6 +392,8 @@ comms_error_t comms_am_create (comms_layer_t * layer, am_addr_t address,
 	comms->set_ack_required = &am_comms_set_ack_required;
 	comms->ack_received = &am_comms_ack_received;
 	comms->set_ack_received = &am_comms_set_ack_received;
+
+	comms->get_time_micro = gtmf;
 
 	comms->set_timestamp = &am_comms_set_timestamp;
 	comms->get_timestamp = &am_comms_get_timestamp;

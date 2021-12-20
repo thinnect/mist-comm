@@ -54,6 +54,8 @@ typedef comms_error_t comms_set_ack_required_f(comms_layer_iface_t*, comms_msg_t
 typedef bool comms_ack_received_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef void comms_set_ack_received_f(comms_layer_iface_t*, comms_msg_t*, bool);
 
+typedef uint32_t comms_get_time_micro_f(comms_layer_iface_t*);
+
 typedef comms_error_t comms_set_timestamp_f(comms_layer_iface_t*, comms_msg_t*, uint32_t);
 typedef uint32_t comms_get_timestamp_f(comms_layer_iface_t*, const comms_msg_t*);
 typedef bool comms_timestamp_valid_f(comms_layer_iface_t*, const comms_msg_t*);
@@ -115,6 +117,8 @@ struct comms_layer_iface {
 	comms_set_ack_required_f* set_ack_required;
 	comms_ack_received_f* ack_received;
 	comms_set_ack_received_f* set_ack_received;
+
+	comms_get_time_micro_f* get_time_micro;
 
 	comms_set_timestamp_f* set_timestamp;
 	comms_get_timestamp_f* get_timestamp;

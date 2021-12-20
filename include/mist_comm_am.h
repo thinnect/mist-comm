@@ -67,12 +67,14 @@ void comms_am_set_source (comms_layer_t * comms, comms_msg_t * msg, am_addr_t so
  * @param address ActiveMessage address for this layer
  * @param sendf   Actual send function to use for sending the message.
  * @param plenf   Max payload length function for the underlying comms component.
+ * @param gtmf    Time reference function.
  * @param startf  Layer start function (can be NULL, if always active).
  * @param stopf   Layer stop function (can be NULL, if always active).
  * @return        COMMS_SUCCESS if initialized correctly.
  */
 comms_error_t comms_am_create (comms_layer_t * layer, am_addr_t address,
                                comms_send_f * sendf, comms_plen_f * plenf,
+                               comms_get_time_micro_f * gtmf,
                                comms_start_f * startf, comms_stop_f * stopf);
 
 

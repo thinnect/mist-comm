@@ -11,8 +11,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_major_, MIST_COMM_VERSION_MAJOR);
-volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_minor_, MIST_COMM_VERSION_MINOR);
+volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_major_, MIST_COMM_VERSION_MAJOR) = MIST_COMM_VERSION_MAJOR;
+volatile uint8_t MIST_COMM_VERSION_PASTER(g_mist_comm_version_minor_, MIST_COMM_VERSION_MINOR) = MIST_COMM_VERSION_MINOR;
 
 static void comms_status_change_callback(comms_layer_t* comms, comms_status_t status, void* user) {
 	comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
@@ -297,6 +297,17 @@ void comms_set_ack_received(comms_layer_t* comms, comms_msg_t* msg, bool receive
 		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
 		cl->set_ack_received(cl, msg, received);
 	}
+}
+
+uint32_t comms_get_time_micro(comms_layer_t* comms) {
+	if(comms != NULL) {
+		comms_layer_iface_t* cl = (comms_layer_iface_t*)comms;
+		if (NULL != cl->get_time_micro)
+		{
+			return cl->get_time_micro(cl);
+		}
+	}
+	return 0;
 }
 
 comms_error_t comms_set_timestamp_micro(comms_layer_t* comms, comms_msg_t* msg, uint32_t timestamp) {

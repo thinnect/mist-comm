@@ -79,6 +79,7 @@ comms_layer_t * serial_activemessage_init (serial_activemessage_t* sam, serial_p
 	// TODO start-stop handlers
 	comms_am_create((comms_layer_t *)sam, address,
 	                &serial_activemessage_send, &serial_activemessage_max_length,
+	                NULL,
 	                NULL, NULL);
 
 	// serial_activemessage_t is a valid comms_layer_t
