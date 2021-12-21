@@ -1,0 +1,10 @@
+language: c
+sudo: false
+addons:
+  apt:
+    packages:
+      - ruby
+
+script:
+  - make -C test/startstop
+  - make -C test/sleep
