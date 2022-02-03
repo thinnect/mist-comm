@@ -14,6 +14,7 @@
 
 #include "loglevels.h"
 #define __MODUUL__ "addrd"
+#define __MODID__ 84
 #define __LOG_LEVEL__ (LOG_LEVEL_mist_comm_am_addrdisco & BASE_LOG_LEVEL)
 #include "log.h"
 #include "sys_panic.h"

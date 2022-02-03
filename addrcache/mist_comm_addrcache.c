@@ -14,6 +14,7 @@
 
 #include "loglevels.h"
 #define __MODUUL__ "addrc"
+#define __MODID__ 83
 #define __LOG_LEVEL__ (LOG_LEVEL_mist_comm_addrcache & BASE_LOG_LEVEL)
 #include "log.h"
 

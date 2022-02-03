@@ -11,6 +11,7 @@
 
 #include "loglevels.h"
 #define __MODUUL__ "mctrl"
+#define __MODID__ 85
 #define __LOG_LEVEL__ (LOG_LEVEL_mist_comm_controller & BASE_LOG_LEVEL)
 #include "log.h"
 
