@@ -97,6 +97,7 @@ static comms_error_t am_comms_send (comms_layer_iface_t * iface, comms_msg_t * m
 		else if (false == comms_cache_get_local(amcomms->cache,
                                           &(msg->body.destination.eui), &(msg->body.destination.local)))
 		{
+			comms_am_addrdisco_discover_local(amcomms->disco, &(msg->body.destination.eui));
 			return COMMS_NO_ADDR; // Nothing retrieved from cache
 		}
 	}
